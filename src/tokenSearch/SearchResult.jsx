@@ -25,7 +25,7 @@ const NilFoundContainer = styled.div`
 
 const SearchDropdown = (props) => {
   const suggestions = useSelector(
-    (state) => state?.velox?.tokenSearch?.suggestions
+    (state) => state?.suggestions
   );
   const filteredSuggestions = suggestions
     .slice()

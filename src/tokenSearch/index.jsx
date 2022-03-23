@@ -9,6 +9,7 @@ import {
   stopSelecting,
 } from '../redux/tokenSearchSlice';
 import SearchInput from "./SearchInput";
+import SearchResult from "./SearchResult";
 // import useProvider from '../ethereum/use-provider';
 // import SearchInput from './SearchInput';
 // import SearchResult from './SearchResult';
@@ -55,7 +56,7 @@ export const TokenSearch = () => {
   return (
     <div ref={searchRef}>
       <SearchInput />
-      {/*{isSelecting && <SearchResult loading={isLoading} />}*/}
+      {isSelecting && <SearchResult loading={isLoading} />}
     </div>
   );
 };
