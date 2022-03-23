@@ -3,15 +3,16 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 
 import magnifyingGlass from './icon-search.svg';
-import {
-  searchTokenPairs,
-  setSearchText,
-} from '../redux/tokenSearchSlice';
-import {
-  startSelecting,
-  stopSelecting,
-  toggleSelecting,
-} from '../redux/tokenSearchSlice';
+import useSearchReducer from "./useSearchReducer";
+// import {
+//   searchTokenPairs,
+//   setSearchText,
+// } from '../../redux/tokenSearchOld/tokenSearchSlice';
+// import {
+//   startSelecting,
+//   stopSelecting,
+//   toggleSelecting,
+// } from '../../redux/tokenSearchOld/tokenSearchSlice';
 
 const PairField = styled.div`
   display: block;
@@ -66,20 +67,22 @@ const combinePairText = (pair) => {
 };
 
 const SearchInput = () => {
-  const dispatch = useDispatch();
-  const searchText = useSelector(
-    (state) => state?.searchText
-  );
-  const isSelecting = useSelector(
-    (state) => state?.isSelecting
-  );
-  const isLoading = useSelector((state) => state.isLoading);
-  const fetchError = useSelector(
-    (state) => state?.fetchError
-  );
-  const selectedPair = useSelector(
-    (state) => state?.selectedPair
-  );
+  const [state, dispatch] = useSearchReducer();
+  const { isSelecting, isLoading, fetchError, selectedPair, searchText } = state
+  // const dispatch = useDispatch();
+  // const searchText = useSelector(
+  //   (state) => state?.velox?.tokenSearchOld?.searchText
+  // );
+  // const isSelecting = useSelector(
+  //   (state) => state?.velox?.tokenSearchOld?.isSelecting
+  // );
+  // const isLoading = useSelector((state) => state?.velox?.tokenSearchOld.isLoading);
+  // const fetchError = useSelector(
+  //   (state) => state?.velox?.tokenSearchOld.fetchError
+  // );
+  // const selectedPair = useSelector(
+  //   (state) => state?.velox?.tokenSearchOld?.selectedPair
+  // );
   const selectedPairText = selectedPair && combinePairText(selectedPair);
 
   const onChange = (e) => {
