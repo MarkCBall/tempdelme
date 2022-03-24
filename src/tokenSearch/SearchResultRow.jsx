@@ -10,7 +10,6 @@ const imageSize = 26;
 
 const NumberFont = styled.span`
   font-family: 'Fira Code', monospace;
-  color: white;
 `;
 
 const Ellipsis = styled.div`

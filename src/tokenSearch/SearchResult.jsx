@@ -24,8 +24,8 @@ const NilFoundContainer = styled.div`
 `;
 
 const SearchDropdown = (props) => {
-  const suggestions = useSelector(
-    (state) => state?.suggestions
+  const {suggestions, searchText} = useSelector(
+    (state) => state
   );
   const filteredSuggestions = suggestions
     .slice()
@@ -35,7 +35,7 @@ const SearchDropdown = (props) => {
     return <NilFoundContainer>Loading...</NilFoundContainer>;
   }
 
-  if (!filteredSuggestions.length) {
+  if (!!searchText && !filteredSuggestions.length) {
     return <NilFoundContainer>No pairs found...</NilFoundContainer>;
   }
 

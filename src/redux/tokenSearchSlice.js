@@ -50,7 +50,7 @@ export const searchTokenPairs = createAsyncThunk(
 const initialTimestamp = new Date().getTime();
 const initialState = {
   fetchError: null,
-  isLoading: true,
+  isLoading: false,
   isSelecting: false,
   pairSearchTimestamp: initialTimestamp,
   searchText: '',

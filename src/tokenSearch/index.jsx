@@ -6,19 +6,13 @@ import {
 } from '../redux/tokenSearchSlice';
 import SearchInput from "./SearchInput";
 import SearchResult from "./SearchResult";
+import SearchFiltering from "./SearchFiltering";
 export const TokenSearch = () => {
   const dispatch = useDispatch();
-  const isLoading = useSelector((state) => {
-    return state?.isLoading
-  });
-  const isSelecting = useSelector(
-    (state) => state?.isSelecting
+  const {isSelecting, searchText, isLoading} = useSelector(
+    (state) => state
   );
   const searchRef = useRef();
-
-  useEffect(() => {
-    dispatch(searchTokenPairs(''));
-  }, [dispatch]);
 
   useEffect(() => {
     window.onclick = (e) => {
@@ -26,11 +20,16 @@ export const TokenSearch = () => {
         dispatch(stopSelecting());
       }
     };
+    //todo return remove onclick
+    //todo useOnClickOutside might be a better implementation?
   }, [dispatch]);
 
   return (
     <div ref={searchRef}>
       <SearchInput />
+      {isSelecting && !searchText &&
+      <SearchFiltering/>
+      }
       {isSelecting && <SearchResult loading={isLoading} />}
     </div>
   );
