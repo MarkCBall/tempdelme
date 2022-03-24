@@ -1,5 +1,5 @@
-import { NETWORKS } from '@rbl/velox-common/multiChains';
-import TradeEstimatorEthMainnetUniV2 from '@rbl/velox-common/shared/tradeEstimators/UniV2ClonesTradeEstimator';
+// import { NETWORKS } from '@rbl/velox-common/multiChains';
+// import TradeEstimatorEthMainnetUniV2 from '@rbl/velox-common/shared/tradeEstimators/UniV2ClonesTradeEstimator';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import retry from 'async-retry';
 import { stringify } from 'flatted';
@@ -131,15 +131,17 @@ export const searchTokenPairs = createAsyncThunk(
   async (searchString, thunkAPI) => {
     console.log("searchTokenPairs")
     try {
-      const { strategy } = thunkAPI.getState().velox;
+      // const { strategy } = thunkAPI.getState().velox;
       const pairSearchTimestamp = new Date().getTime();
       thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
       const data = await retry(
-        () => searchTokensAsync(searchString, "ethereum"),//todo this should be props into the component or something
+        () => searchTokensAsync(searchString, JSON.parse(`{"identifiers":{"blockchain":"Avalanche","chainId":"43114","exchange":"Pangolin"},"key":"pangolin","tableSuffix":"pangolin"}`)),//todo this should be props into the component or something -- from src/containers/exchangeSelector/allowableExchanges.ts in velox
         { retries: 1 }
       );
+      console.log("data",data)
       return { data, pairSearchTimestamp };
     } catch (e) {
+      console.log("err searchTokenPairs",e)
       throw new Error(stringify(e, Object.getOwnPropertyNames(e)));
     }
   }

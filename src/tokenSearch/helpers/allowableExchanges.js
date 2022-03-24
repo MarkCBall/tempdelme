@@ -25,9 +25,9 @@ export const rinkebyUniswap = {
 
 export const sushiswap = {
   identifiers: {
-    blockchain: NETWORKS.ETHEREUM.NAME,
-    chainId: NETWORKS.ETHEREUM.MAINNET.CHAIN_ID,
-    exchange: NETWORKS.ETHEREUM.MAINNET.SUSHISWAP.NAME,
+    // blockchain: NETWORKS.ETHEREUM.NAME,
+    // chainId: NETWORKS.ETHEREUM.MAINNET.CHAIN_ID,
+    // exchange: NETWORKS.ETHEREUM.MAINNET.SUSHISWAP.NAME,
   },
   key: 'sushiswap',
   tableSuffix: `_${NETWORKS.ETHEREUM.MAINNET.SUSHISWAP.NAME.toLowerCase()}`,
@@ -103,9 +103,9 @@ export const setDefaultExchangeName = (name) => {
   localStorage.setItem(DEFAULT_EXCHANGE_NAME_KEY, name);
 };
 
-export const getDefaultExchange = () => {
-  return EXCHANGES[getDefaultExchangeName()];
-};
+// export const getDefaultExchange = () => {
+//   return EXCHANGES[getDefaultExchangeName()];
+// };
 
 // export const setDefaultExchange = (exchange) => {
 //   setDefaultExchangeName(exchange.key);

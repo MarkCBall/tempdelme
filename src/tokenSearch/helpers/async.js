@@ -1,4 +1,4 @@
-import { getWrappedNativeToken } from '@rbl/velox-common/multiChains';
+// import { getWrappedNativeToken } from '@rbl/velox-common/multiChains';
 // import axios from 'axios';
 import BN from 'bignumber.js';
 // import * as ethers from 'ethers';
@@ -7,11 +7,11 @@ import { gql } from 'graphql-request';
 import { flatten, keyBy } from 'lodash';
 
 // import { strategyApiKey, strategyApiUri } from '../config';
-import {
-  rinkebyUniswap,
-  sushiswap,
-  uniswapV2,
-} from './allowableExchanges';
+// import {
+//   rinkebyUniswap,
+//   sushiswap,
+//   uniswapV2,
+// } from './allowableExchanges';
 // import { allowableExchanges } from '../model/model';
 // import { Strategy } from '../model/strategy';
 // import { calculateTrigger } from '../redux/strategy/mapStrategyData';
@@ -256,9 +256,9 @@ export const searchTokensAsync = async (
   config = { nilVolumeOkay: false }
 ) => {
   if (
-    selectedExchange.key === uniswapV2.key ||
-    selectedExchange.key === rinkebyUniswap.key ||
-    selectedExchange.key === sushiswap.key
+    selectedExchange.key === "sushiswap" ||//uniswapV2.key ||
+    selectedExchange.key === "uniswapV2" //rinkebyUniswap.key ||
+    // selectedExchange.key === sushiswap.key
   )
     return await searchTokensAsyncVelox(searchString, selectedExchange, config);
     //pangolin
@@ -319,10 +319,10 @@ async function searchTokensAsyncVelox(
   config
 ) {
   const text = searchString ? `%${searchString}%` : '%0x%'; //empty string turns to 0x which is found by every pair
-  const wrappedNativeTokenAddress = getWrappedNativeToken(
-    selectedExchange.identifiers.blockchain,
-    selectedExchange.identifiers.chainId
-  );
+  // const wrappedNativeTokenAddress = getWrappedNativeToken(
+  //   selectedExchange.identifiers.blockchain,
+  //   selectedExchange.identifiers.chainId
+  // );
   const parameters = { text };
   const query = getSearchTokenQuery(selectedExchange.tableSuffix);
   let res;
@@ -332,7 +332,7 @@ async function searchTokensAsyncVelox(
     direct_pairs_with_required_token = (
       await getDirectPairsVelox(
         selectedExchange.tableSuffix,
-        wrappedNativeTokenAddress
+        "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"//todo wrappedNativeTokenAddress
       )
     ).direct_pairs_with_required_token;
   } catch (e) {
@@ -383,10 +383,10 @@ async function searchTokensAsyncRome(
   config
 ) {
   const searchText = searchString ? `%${searchString}%` : '%0x%'; //empty string turns to 0x which is found by every pair
-  const wrappedNativeTokenAddress = getWrappedNativeToken(
-    selectedExchange.identifiers.blockchain,
-    selectedExchange.identifiers.chainId
-  );
+  // const wrappedNativeTokenAddress = getWrappedNativeToken(
+  //   selectedExchange.identifiers.blockchain,
+  //   selectedExchange.identifiers.chainId
+  // );
   const parameters = {
     exchange: selectedExchange.identifiers.exchange,
     searchText,
@@ -400,7 +400,7 @@ async function searchTokensAsyncRome(
   try {
     res = await romePairsClient.request(query, parameters);
     direct_pairs_with_required_token = (
-      await getDirectPairsRome(blockchain, exchange, wrappedNativeTokenAddress)
+      await getDirectPairsRome(blockchain, exchange, "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7")//todo
     ).direct_pairs_with_required_token;
   } catch (e) {
     throw new Error(
