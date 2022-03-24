@@ -326,15 +326,15 @@ async function searchTokensAsyncVelox(
   const parameters = { text };
   const query = getSearchTokenQuery(selectedExchange.tableSuffix);
   let res;
-  let direct_pairs_with_required_token;
+  // let direct_pairs_with_required_token;
   try {
     res = await veloxPairsClient.request(query, parameters);
-    direct_pairs_with_required_token = (
-      await getDirectPairsVelox(
-        selectedExchange.tableSuffix,
-        "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"//todo wrappedNativeTokenAddress
-      )
-    ).direct_pairs_with_required_token;
+    // direct_pairs_with_required_token = (
+    //   await getDirectPairsVelox(
+    //     selectedExchange.tableSuffix,
+    //     "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
+    //   )
+    // ).direct_pairs_with_required_token;
   } catch (e) {
     throw new Error(
       `${stringify(e, Object.getOwnPropertyNames(e))}, args:${stringify({
@@ -344,16 +344,16 @@ async function searchTokensAsyncVelox(
     );
   }
   const { pair_search } = res;
-  const tokensWithPairToWrappedNativeToken = keyBy(
-    flatten(
-      direct_pairs_with_required_token.map(
-        (pair) => [
-          pair.token0_address,
-          pair.token1_address,
-        ]
-      )
-    )
-  );
+  // const tokensWithPairToWrappedNativeToken = keyBy(
+  //   flatten(
+  //     direct_pairs_with_required_token.map(
+  //       (pair) => [
+  //         pair.token0_address,
+  //         pair.token1_address,
+  //       ]
+  //     )
+  //   )
+  // );
   const mappedPairs = pair_search
     .filter(({ pair }) => {
       return (
@@ -363,9 +363,7 @@ async function searchTokensAsyncVelox(
         pair.pair_volumes?.token0_price &&
         pair.pair_volumes?.token1_price &&
         pair.token0 &&
-        pair.token1 &&
-        tokensWithPairToWrappedNativeToken[pair.token0.address] &&
-        tokensWithPairToWrappedNativeToken[pair.token1.address]
+        pair.token1
       );
     })
     .map(({ pair }) => ({
@@ -399,9 +397,9 @@ async function searchTokensAsyncRome(
   let direct_pairs_with_required_token;
   try {
     res = await romePairsClient.request(query, parameters);
-    direct_pairs_with_required_token = (
-      await getDirectPairsRome(blockchain, exchange, "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7")//todo
-    ).direct_pairs_with_required_token;
+    // direct_pairs_with_required_token = (
+    //   await getDirectPairsRome(blockchain, exchange, "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7")
+    // ).direct_pairs_with_required_token;
   } catch (e) {
     throw new Error(
       `${stringify(e, Object.getOwnPropertyNames(e))}, args:${stringify({
@@ -412,25 +410,25 @@ async function searchTokensAsyncRome(
   }
   const { pair_search } = res;
 
-  const tokensWithPairToWrappedNativeToken = keyBy(
-    flatten(
-      direct_pairs_with_required_token.map(
-        (pair) => [
-          pair.token0_address,
-          pair.token1_address,
-        ]
-      )
-    )
-  );
+  // const tokensWithPairToWrappedNativeToken = keyBy(
+  //   flatten(
+  //     direct_pairs_with_required_token.map(
+  //       (pair) => [
+  //         pair.token0_address,
+  //         pair.token1_address,
+  //       ]
+  //     )
+  //   )
+  // );
 
   const mappedPairs = pair_search
     .filter((pair) => {
       return (
         // (config.nilVolumeOkay || searchString.startsWith("0x") || Number(pair?.last_24hour_usd_volume)) &&
         pair.token0 &&
-        pair.token1 &&
-        tokensWithPairToWrappedNativeToken[pair.token0.address] &&
-        tokensWithPairToWrappedNativeToken[pair.token1.address]
+        pair.token1
+        // tokensWithPairToWrappedNativeToken[pair.token0.address] &&
+        // tokensWithPairToWrappedNativeToken[pair.token1.address]
       );
     })
     .map((pair) => {
