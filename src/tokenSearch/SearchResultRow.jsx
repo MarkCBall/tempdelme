@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { setPair } from '../redux/tokenSearchSlice';
 import { firstAndLast } from './helpers/firstAndLast';
 import { intToWords } from './helpers/intToWords';
-// import useProvider from '../ethereum/use-provider';
 
 const imageSize = 26;
 
@@ -44,7 +43,6 @@ const VirtualizedRow = (props) => {
   const { index, style, suggestions } = props;
   const selectedPair = suggestions[index];
   const dispatch = useDispatch();
-  // const { provider } = useProvider();
   const rowHeight = props.parent.props.rowHeight;
 
   const onClick = (event) => {

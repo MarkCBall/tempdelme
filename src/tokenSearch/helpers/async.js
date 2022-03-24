@@ -232,21 +232,6 @@ const getTokenNamesRome = gql`
   }
 `;
 
-// export const getTokenNameDictionary = async (tokenAddresses: Array<string>) => {
-//   const checkSummedAddresses = tokenAddresses.map(ethers.utils.getAddress);
-//   const resVelox = await veloxPairsClient.request(getTokenNamesVelox, {
-//     tokenAddresses: checkSummedAddresses,
-//   });
-//   const resRome = await romePairsClient.request(getTokenNamesRome, {
-//     tokenAddresses: checkSummedAddresses,
-//   });
-//
-//   return {
-//     Avalanche: keyBy(resRome.tokensAvalanche, (d) => d.address.toLowerCase()),
-//     BSC: keyBy(resRome.tokensBsc, (d) => d.address.toLowerCase()),
-//     Ethereum: keyBy(resVelox.tokens, (d) => d.address.toLowerCase()),
-//   };
-// };
 
 //TODO: This should be unified in the future
 //We are going to use the romenet token database moving forward
@@ -268,73 +253,17 @@ export const searchTokensAsync = async (
     return await searchTokensAsyncRome(searchString, selectedExchange, config);
 };
 
-// export const addStrategyAsync = async (provider: any, strategy: Strategy) => {
-//   const signedMessage = await signAddRequest(provider, strategy);
-//   const trigger = calculateTrigger(strategy);
-//   return await axios.post(
-//     strategyApiUri + '/strategies',
-//     {
-//       ...strategy,
-//       signedMessage,
-//       trigger,
-//     },
-//     { headers: { 'api-key': strategyApiKey } }
-//   );
-// };
-
-// export const getUserStrategiesAsync = async (
-//   userAddress: string,
-//   auth: { message: string; signedMessage: string }
-// ) => {
-//   const res = await axios.get(strategyApiUri + '/strategies', {
-//     headers: { 'api-key': strategyApiKey },
-//     params: {
-//       message: auth.message,
-//       signedMessage: auth.signedMessage,
-//       userAddress,
-//     },
-//   });
-//   return res?.data?.strategies || [];
-// };
-
-// export const deleteStrategyAsync = async (
-//   provider: any,
-//   userAddress: string,
-//   identifier: string
-// ) => {
-//   const signedMessage = await signDeleteRequest(
-//     provider,
-//     identifier,
-//     userAddress
-//   );
-//   return await axios.delete(strategyApiUri + '/strategies', {
-//     data: { identifier, signedMessage, userAddress },
-//     headers: { 'api-key': strategyApiKey },
-//   });
-// };
-
 async function searchTokensAsyncVelox(
   searchString,
   selectedExchange,
   config
 ) {
   const text = searchString ? `%${searchString}%` : '%0x%'; //empty string turns to 0x which is found by every pair
-  // const wrappedNativeTokenAddress = getWrappedNativeToken(
-  //   selectedExchange.identifiers.blockchain,
-  //   selectedExchange.identifiers.chainId
-  // );
   const parameters = { text };
   const query = getSearchTokenQuery(selectedExchange.tableSuffix);
   let res;
-  // let direct_pairs_with_required_token;
   try {
     res = await veloxPairsClient.request(query, parameters);
-    // direct_pairs_with_required_token = (
-    //   await getDirectPairsVelox(
-    //     selectedExchange.tableSuffix,
-    //     "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7"
-    //   )
-    // ).direct_pairs_with_required_token;
   } catch (e) {
     throw new Error(
       `${stringify(e, Object.getOwnPropertyNames(e))}, args:${stringify({
@@ -344,16 +273,6 @@ async function searchTokensAsyncVelox(
     );
   }
   const { pair_search } = res;
-  // const tokensWithPairToWrappedNativeToken = keyBy(
-  //   flatten(
-  //     direct_pairs_with_required_token.map(
-  //       (pair) => [
-  //         pair.token0_address,
-  //         pair.token1_address,
-  //       ]
-  //     )
-  //   )
-  // );
   const mappedPairs = pair_search
     .filter(({ pair }) => {
       return (
@@ -377,14 +296,9 @@ async function searchTokensAsyncVelox(
 
 async function searchTokensAsyncRome(
   searchString,
-  selectedExchange,
-  config
+  selectedExchange
 ) {
   const searchText = searchString ? `%${searchString}%` : '%0x%'; //empty string turns to 0x which is found by every pair
-  // const wrappedNativeTokenAddress = getWrappedNativeToken(
-  //   selectedExchange.identifiers.blockchain,
-  //   selectedExchange.identifiers.chainId
-  // );
   const parameters = {
     exchange: selectedExchange.identifiers.exchange,
     searchText,
@@ -394,12 +308,8 @@ async function searchTokensAsyncRome(
   const query = getRomeSearchTokenQuery(blockchain, exchange);
 
   let res;
-  let direct_pairs_with_required_token;
   try {
     res = await romePairsClient.request(query, parameters);
-    // direct_pairs_with_required_token = (
-    //   await getDirectPairsRome(blockchain, exchange, "0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7")
-    // ).direct_pairs_with_required_token;
   } catch (e) {
     throw new Error(
       `${stringify(e, Object.getOwnPropertyNames(e))}, args:${stringify({
@@ -410,25 +320,11 @@ async function searchTokensAsyncRome(
   }
   const { pair_search } = res;
 
-  // const tokensWithPairToWrappedNativeToken = keyBy(
-  //   flatten(
-  //     direct_pairs_with_required_token.map(
-  //       (pair) => [
-  //         pair.token0_address,
-  //         pair.token1_address,
-  //       ]
-  //     )
-  //   )
-  // );
-
   const mappedPairs = pair_search
     .filter((pair) => {
       return (
-        // (config.nilVolumeOkay || searchString.startsWith("0x") || Number(pair?.last_24hour_usd_volume)) &&
         pair.token0 &&
         pair.token1
-        // tokensWithPairToWrappedNativeToken[pair.token0.address] &&
-        // tokensWithPairToWrappedNativeToken[pair.token1.address]
       );
     })
     .map((pair) => {
