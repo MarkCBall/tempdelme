@@ -50,7 +50,7 @@ const VirtualizedRow = (props) => {
   const onClick = (event) => {
     event.preventDefault();
     if (selectedPair && selectedPair.token0 && selectedPair.token1) {
-      // dispatch(setPair({ provider, selectedPair }));
+      dispatch(setPair({ selectedPair }));
     }
   };
 

@@ -40,19 +40,9 @@ export const fetchAndSetTokenPair = createAsyncThunk(
 
 export const setPair = createAsyncThunk(
   'token/setPair',
-  async ({ provider, selectedPair }, thunkAPI) => {
+  async ({ selectedPair }) => {
     console.log("setPair")
-    // const { selectedExchange } = thunkAPI.getState().velox.strategy;
-    // thunkAPI.dispatch(
-    //   updateTokenBalance({ provider, token: selectedPair.token0 })
-    // );
-    // thunkAPI.dispatch(
-    //   updateTokenBalance({ provider, token: selectedPair.token1 })
-    // );
-    // thunkAPI.dispatch(
-    //   getPairReserves({ provider, selectedExchange, selectedPair })
-    // );
-    // return selectedPair;
+    return selectedPair;
   }
 );
 const getPairReserves = createAsyncThunk(
