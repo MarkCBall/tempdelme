@@ -3,13 +3,14 @@ import TradeEstimatorEthMainnetUniV2 from '@rbl/velox-common/shared/tradeEstimat
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import retry from 'async-retry';
 import { stringify } from 'flatted';
+import {searchTokensAsync} from "../tokenSearch/helpers/async";
 
 // import { TokenSearchState } from '../../model/store/token-search';
 // import {
 //   searchTokenByPairAddressAsync,
 //   searchTokensAsync,
 // } from '../../services/proxy.service';
-// import loggerWithCloud from '../../utils/logging/loggerWithCloud';
+// import loggerWithCloud from '../../helpers/logging/loggerWithCloud';
 // import { updateTokenBalance } from '../quotas/quotasSlice';
 // import { PROVIDER_DISCONNECT } from '../sharedActions';
 
@@ -17,6 +18,7 @@ import { stringify } from 'flatted';
 export const fetchAndSetTokenPair = createAsyncThunk(
   'token/searchSetPair',
   async ({ pairAddress, provider }, thunkAPI) => {
+    console.log("fetchAndSetTokenPair")
     // try {
     //   const { strategy } = thunkAPI.getState().velox;
     //   const selectedPair = await searchTokenByPairAddressAsync(
@@ -39,6 +41,7 @@ export const fetchAndSetTokenPair = createAsyncThunk(
 export const setPair = createAsyncThunk(
   'token/setPair',
   async ({ provider, selectedPair }, thunkAPI) => {
+    console.log("setPair")
     // const { selectedExchange } = thunkAPI.getState().velox.strategy;
     // thunkAPI.dispatch(
     //   updateTokenBalance({ provider, token: selectedPair.token0 })
@@ -55,6 +58,7 @@ export const setPair = createAsyncThunk(
 const getPairReserves = createAsyncThunk(
   'tokens/pairTradeEstimate',
   async (payload) => {
+    console.log("getPairReserves")
     // const { provider, selectedExchange, selectedPair } = payload;
     //
     // //todo use velox-common/uniV2ClonesSDK/constants
@@ -110,6 +114,7 @@ const getPairReserves = createAsyncThunk(
 export const resetSearchOnNewExchange = createAsyncThunk(
   'token/searchReset',
   async (searchString, thunkAPI) => {
+    console.log("resetSearchOnNewExchange")
     // thunkAPI.dispatch(searchTokenPairs(''));
   }
 );
@@ -124,18 +129,19 @@ const setPairSearchTimestamp = createAsyncThunk(
 export const searchTokenPairs = createAsyncThunk(
   'token/search',
   async (searchString, thunkAPI) => {
-    // try {
-    //   const { strategy } = thunkAPI.getState().velox;
-    //   const pairSearchTimestamp = new Date().getTime();
-    //   thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
-    //   const data = await retry(
-    //     () => searchTokensAsync(searchString, strategy.selectedExchange),
-    //     { retries: 1 }
-    //   );
-    //   return { data, pairSearchTimestamp };
-    // } catch (e) {
-    //   throw new Error(stringify(e, Object.getOwnPropertyNames(e)));
-    // }
+    console.log("searchTokenPairs")
+    try {
+      const { strategy } = thunkAPI.getState().velox;
+      const pairSearchTimestamp = new Date().getTime();
+      thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
+      const data = await retry(
+        () => searchTokensAsync(searchString, "ethereum"),//todo this should be props into the component or something
+        { retries: 1 }
+      );
+      return { data, pairSearchTimestamp };
+    } catch (e) {
+      throw new Error(stringify(e, Object.getOwnPropertyNames(e)));
+    }
   }
 );
 

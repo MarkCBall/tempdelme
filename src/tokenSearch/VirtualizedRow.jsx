@@ -4,8 +4,8 @@ import { Col, Row } from 'reactstrap';
 import styled from 'styled-components';
 
 import { setPair } from '../../redux/tokenSearch/tokenSearchSlice';
-import { firstAndLast } from '../../utils/firstAndLast';
-import { intToWords } from '../../utils/intToWords';
+import { firstAndLast } from '../../helpers/firstAndLast';
+import { intToWords } from '../../helpers/intToWords';
 import useProvider from '../ethereum/use-provider';
 
 const imageSize = 26;
