@@ -15,7 +15,7 @@ export const TokenSearch = () => {
   const searchRef = useRef();
 
   useEffect(() => {
-    window.onclick = (e) => {
+    window.onmousedown = (e) => {
       if (!searchRef?.current?.contains(e.target)) {
         dispatch(stopSelecting());
       }
