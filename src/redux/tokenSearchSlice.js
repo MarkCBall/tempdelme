@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import retry from 'async-retry';
 import { stringify } from 'flatted';
 import {searchTokensAsync} from "../tokenSearch/helpers/async";
+import { omitBy } from "lodash"
 
 export const setPair = createAsyncThunk(
   'token/setPair',
@@ -19,6 +20,7 @@ export const resetSearchOnNewExchange = createAsyncThunk(
   }
 );
 
+//todo no need for this to be a thunk
 const setPairSearchTimestamp = createAsyncThunk(
   'token/saveTime',
   async (timestamp) => {
@@ -31,11 +33,18 @@ export const searchTokenPairs = createAsyncThunk(
   async (searchString, thunkAPI) => {
     console.log("searchTokenPairs")
     try {
-      // const { strategy } = thunkAPI.getState().velox;
+      const { exchangeMap, networkMap } = thunkAPI.getState();
+      const cleanedExchangeMap = omitBy(exchangeMap,(b)=>!b)
+      const cleanedNetworkMap = omitBy(networkMap,(b)=>!b)
+      console.log("exchangeMap", cleanedExchangeMap, Object.keys(cleanedExchangeMap)[0],"networkMap",cleanedNetworkMap, Object.keys(cleanedNetworkMap)[0])
       const pairSearchTimestamp = new Date().getTime();
       thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
       const data = await retry(
-        () => searchTokensAsync(searchString, JSON.parse(`{"identifiers":{"blockchain":"Avalanche","chainId":"43114","exchange":"Pangolin"},"key":"pangolin","tableSuffix":"pangolin"}`)),//todo this should be props into the component or something -- from src/containers/exchangeSelector/allowableExchanges.ts in velox
+        () => searchTokensAsync(searchString,
+          {identifiers:{blockchain:Object.keys(cleanedNetworkMap)[0], exchange:Object.keys(cleanedExchangeMap)[0]}}
+          //todo remove identifier
+          //todo allow multiple blockchains/exchanges
+          ),
         { retries: 1 }
       );
       console.log("data",data)

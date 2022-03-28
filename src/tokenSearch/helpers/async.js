@@ -32,6 +32,7 @@ const getRomeSearchTokenQuery = (blockchain, exchange) => {
 `;
 };
 
+//todo remove this layer
 export const searchTokensAsync = async (
   searchString,
   selectedExchange,
@@ -44,6 +45,7 @@ async function searchTokensAsyncRome(
   searchString,
   selectedExchange
 ) {
+  console.log("search tokens params", searchString, selectedExchange)
   const searchText = searchString ? `%${searchString}%` : '%0x%'; //empty string turns to 0x which is found by every pair
   const parameters = {
     exchange: selectedExchange.identifiers.exchange,

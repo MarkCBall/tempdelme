@@ -53,7 +53,7 @@ export const SearchFiltering = () => {
       <hr/>
       {uniqBy(networkExchangePairs.filter(pair=>networkMap[pair[0]]),1).map(pair=>{
         const exchangeName = pair[1]
-        return <ExchangeSelection exchangeName={exchangeName}/>
+        return <ExchangeSelection key={exchangeName} exchangeName={exchangeName}/>
       })}
     </div>
 
