@@ -6,8 +6,6 @@ import magnifyingGlass from './icon-search.svg';
 import {
   searchTokenPairs,
   setSearchText,
-} from '../redux/tokenSearchSlice';
-import {
   startSelecting,
   stopSelecting,
   toggleSelecting,

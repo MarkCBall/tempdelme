@@ -57,6 +57,8 @@ const initialState = {
   selectedPair: undefined,
   serializedTradeEstimator: '',
   suggestions: [],
+  exchangeMap:{},
+  networkMap:{}
 };
 
 export const tokenSearchSlice = createSlice({
@@ -113,9 +115,16 @@ export const tokenSearchSlice = createSlice({
     toggleSelecting: (state) => {
       state.isSelecting = !state.isSelecting;
     },
+    setExchangeMap: (state, action) => {
+      state.exchangeMap[action.payload.exchangeName] = action.payload.checked
+    },
+    setNetworkMap: (state, action) => {
+      console.log(action)
+      state.networkMap[action.payload.networkName] = action.payload.checked
+    }
   },
 });
 
-export const { setSearchText, startSelecting, stopSelecting, toggleSelecting } =
+export const { setSearchText, startSelecting, stopSelecting, toggleSelecting, setExchangeMap, setNetworkMap } =
   tokenSearchSlice.actions;
 export default tokenSearchSlice.reducer;
