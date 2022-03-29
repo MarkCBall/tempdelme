@@ -1,0 +1,127 @@
+<html>
+<head>
+    <script lang="javascript">
+      function nameSpaceCookies(){
+        const widgetNamespace = "me-"
+        var cookieDesc = Object.getOwnPropertyDescriptor(Document.prototype, 'cookie') ||
+          Object.getOwnPropertyDescriptor(HTMLDocument.prototype, 'cookie');
+        if (cookieDesc && cookieDesc.configurable) {
+          Object.defineProperty(document, 'cookie', {
+            get: function () {
+              const cookiesStr = cookieDesc.get.call(document);
+              const nameSpacedCookiesArr = cookiesStr.split(";").filter(s=>s.trim().startsWith(widgetNamespace))
+              const cookiesArr = nameSpacedCookiesArr.map(s=>s.trim().slice(widgetNamespace.length))
+              return cookiesArr.join(";")
+            },
+            set: function (cookieStr) {
+              const attributes = cookieStr.split(";")
+              const keyVal = attributes.filter(att=>!["expires=","path=","domain=","max-age=","secure","samesite","__Secure","__Host"].some(arg=>att.trim().startsWith(arg)))[0]
+              if (!keyVal) throw new Error("Trying to set invalid cookie"+cookieStr)
+              const [ key, val ] = keyVal.split("=")
+              const replacement = `${widgetNamespace}${key}=${val}`
+              const newCookie = cookieStr.replace(keyVal, replacement)
+              cookieDesc.set.call(document, newCookie);
+            },
+            enumerable: true,
+            configurable: true,
+          })
+        }
+      }
+      nameSpaceCookies()
+      function setCookie() {
+        const cname = document.getElementById("cname").value
+        const cvalue = document.getElementById("cval").value
+        const d = new Date();
+        d.setTime(d.getTime() + (5 * 60 * 1000));
+        let expires = "expires="+d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";" + "path=/";
+      }
+
+      function getCookie() {
+        console.log("cookie string",document.cookie)
+        const cname = document.getElementById("cname").value
+        let name = cname + "=";
+        let ca = document.cookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            alert("You cookie " + c.substring(name.length, c.length));
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      ////////////////////////////////////////////////
+
+
+      //fixes localStorage and sessionStorage
+      function nameSpaceLocalStorage(){
+        const widgetNamespace = "me-"
+        const set = window.localStorage.setItem
+        const get = window.localStorage.getItem
+        Storage.prototype.setItem = function() {
+          arguments[0] = widgetNamespace+arguments[0]
+          set.apply(this,arguments)
+        }
+        Storage.prototype.getItem = function() {
+          arguments[0] = widgetNamespace+arguments[0]
+          return get.apply(this, arguments)
+        }
+      }
+      nameSpaceLocalStorage()
+
+      function setLocalstorage(){
+        const cname = document.getElementById("cname").value
+        const cvalue = document.getElementById("cval").value
+        window.localStorage.setItem(cname,cvalue)
+      }
+      function getLocalstorage(){
+        const cname = document.getElementById("cname").value
+        alert("You storage " + window.localStorage.getItem(cname));
+        return window.localStorage.getItem(cname)
+      }
+
+      ////////////////////////////////
+
+      function setSessionstorage(){
+        const cname = document.getElementById("cname").value
+        const cvalue = document.getElementById("cval").value
+        window.sessionStorage.setItem(cname,cvalue)
+      }
+      function getSessionstorage(){
+        const cname = document.getElementById("cname").value
+        alert("You storage " + window.sessionStorage.getItem(cname));
+        return window.sessionStorage.getItem(cname)
+      }
+
+
+    </script>
+</head>
+<body style="color: #fff">
+<div>
+    <input style="width:100%" id="cname" value="1"/>
+    <input style="width:100%" id="cval" value="1"/>
+    <button onClick="setCookie()">
+        setCookie
+    </button>
+     <button onClick="setLocalstorage()">
+        setLocalstorage
+    </button>
+     <button onClick="setSessionstorage()">
+        setSessionstorage
+    </button>
+
+    <hr/>
+    <button onClick="getCookie()">getCookie</button>
+    <button onClick="getLocalstorage()">getLocalstorage</button>
+    <button onClick="getSessionstorage()">getSessionstorage</button>
+
+
+</div>
+<div id="messages"></div>
+</body>
+</html>

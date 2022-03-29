@@ -5,9 +5,9 @@ import { romePairsClient } from './graphqlClients';
 
 const getRomeSearchTokenQuery = (blockchain) => {
   return gql`
-  query SearchTokens($exchange: String!, $searchText: String!) {
-    pair_search: ${blockchain}_pair_search(where: {concat_ws: {_ilike: $searchText}, exchange: {_ilike: $exchange}}, limit: 500, order_by: { last_24hour_usd_volume: desc_nulls_last }) {
-      id: pair_address
+  query SearchTokens($searchText: String!, $exchanges: [String!]!) {
+    pair_search: ${blockchain}_pair_search(where: {concat_ws: {_ilike: $searchText}, exchange: {_in:$exchanges}}, limit: 5, order_by: { last_24hour_usd_volume: desc_nulls_last }) {
+    id: pair_address
       token0 {
         address
         symbol
@@ -40,7 +40,7 @@ export const searchTokensAsync = async (
 ) => {
   const searchText = searchString ? `%${searchString}%` : '%0x%'; //empty string turns to 0x which is found by every pair
   const parameters = {
-    exchange: selectedExchange.exchange,
+    exchanges: [selectedExchange.exchange],//todo accept more exchanges
     searchText,
   };
   const blockchain = selectedExchange.blockchain.toLowerCase();
