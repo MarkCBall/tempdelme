@@ -2,8 +2,10 @@ import BN from 'bignumber.js';
 import { stringify } from 'flatted';
 import { gql } from 'graphql-request';
 import { romePairsClient } from './graphqlClients';
+import { networkExchangePairs } from './config';
 
 const getRomeSearchTokenQuery = (blockchain, exchange) => {
+  console.log(typeof (exchange));
   return gql`
   query SearchTokens($exchange: String!, $searchText: String!) {
     pair_search: ${blockchain}_pair_search(where: {concat_ws: {_ilike: $searchText}, exchange: {_ilike: $exchange}}, limit: 500, order_by: { last_24hour_usd_volume: desc_nulls_last }) {
@@ -38,22 +40,21 @@ export const searchTokensAsync = async (
   selectedExchange,
   config = { nilVolumeOkay: false }
 ) => {
-    return await searchTokensAsyncRome(searchString, selectedExchange, config);
-};
+  console.log("search tokens params:", searchString, selectedExchange)
 
-async function searchTokensAsyncRome(
-  searchString,
-  selectedExchange
-) {
-  console.log("search tokens params", searchString, selectedExchange)
+  // We have to clean the exchange list, there seems to be artefact left when we unselect.
+  // console.log(selectedExchange.exchange.filter(exchange=> selectedExchange.blockchain.filter(blockchain=>  networkExchangePairs[blockchain])));
+
   const searchText = searchString ? `%${searchString}%` : '%0x%'; //empty string turns to 0x which is found by every pair
   const parameters = {
-    exchange: selectedExchange.identifiers.exchange,
+    exchange: selectedExchange.exchange[0],
     searchText,
   };
-  const blockchain = selectedExchange.identifiers.blockchain.toLowerCase();
-  const exchange = selectedExchange.identifiers.exchange.toLowerCase();
+  const blockchain = selectedExchange.blockchain[0].toLowerCase();
+  const exchange = selectedExchange.exchange[0].toLowerCase();
+  console.log(blockchain, exchange)
   const query = getRomeSearchTokenQuery(blockchain, exchange);
+
 
   let res;
   try {

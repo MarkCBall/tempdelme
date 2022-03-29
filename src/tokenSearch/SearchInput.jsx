@@ -88,19 +88,19 @@ const SearchInput = () => {
   const onClick = () => dispatch(startSelecting());
   const onKeyDown = (e) => e.code === 'Escape' && dispatch(stopSelecting());
 
-  //todo throw to a global error boundary
-  if (fetchError) {
-    return (
-      <PairField>
-        <StyledInput
-          autocomplete={'off'}
-          style={{ color: 'red' }}
-          value={'Something went wrong..'}
-          onChange={() => {}}
-        />
-      </PairField>
-    );
-  }
+  // //todo throw to a global error boundary
+  // if (fetchError) {
+  //   return (
+  //     <PairField>
+  //       <StyledInput
+  //         autocomplete={'off'}
+  //         style={{ color: 'red' }}
+  //         value={'Something went wrong..'}
+  //         onChange={() => {}}
+  //       />
+  //     </PairField>
+  //   );
+  // }
 
   let value;
   if (isSelecting) {

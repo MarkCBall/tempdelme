@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import retry from 'async-retry';
 import { stringify } from 'flatted';
-import {searchTokensAsync} from "../tokenSearch/helpers/async";
+import { searchTokensAsync } from "../tokenSearch/helpers/async";
 import { omitBy } from "lodash"
 
 export const setPair = createAsyncThunk(
@@ -34,23 +34,26 @@ export const searchTokenPairs = createAsyncThunk(
     console.log("searchTokenPairs")
     try {
       const { exchangeMap, networkMap } = thunkAPI.getState();
-      const cleanedExchangeMap = omitBy(exchangeMap,(b)=>!b)
-      const cleanedNetworkMap = omitBy(networkMap,(b)=>!b)
-      console.log("exchangeMap", cleanedExchangeMap, Object.keys(cleanedExchangeMap)[0],"networkMap",cleanedNetworkMap, Object.keys(cleanedNetworkMap)[0])
+      const cleanedExchangeMap = omitBy(exchangeMap, (b) => !b)
+      const cleanedNetworkMap = omitBy(networkMap, (b) => !b)
+      // console.log("exchangeMap", cleanedExchangeMap, Object.keys(cleanedExchangeMap)[0],"networkMap",cleanedNetworkMap, Object.keys(cleanedNetworkMap)[0])
       const pairSearchTimestamp = new Date().getTime();
       thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
       const data = await retry(
         () => searchTokensAsync(searchString,
-          {identifiers:{blockchain:Object.keys(cleanedNetworkMap)[0], exchange:Object.keys(cleanedExchangeMap)[0]}}
+          {
+            blockchain: Object.keys(cleanedNetworkMap),
+            exchange: Object.keys(cleanedExchangeMap)
+          }
           //todo remove identifier
           //todo allow multiple blockchains/exchanges
-          ),
+        ),
         { retries: 1 }
       );
-      console.log("data",data)
+      console.log("data", data)
       return { data, pairSearchTimestamp };
     } catch (e) {
-      console.log("err searchTokenPairs",e)
+      console.log("err searchTokenPairs", e)
       throw new Error(stringify(e, Object.getOwnPropertyNames(e)));
     }
   }
@@ -66,8 +69,8 @@ const initialState = {
   selectedPair: undefined,
   serializedTradeEstimator: '',
   suggestions: [],
-  exchangeMap:{},
-  networkMap:{}
+  exchangeMap: {},
+  networkMap: {}
 };
 
 export const tokenSearchSlice = createSlice({

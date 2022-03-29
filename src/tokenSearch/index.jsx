@@ -7,12 +7,17 @@ import {
 import SearchInput from "./SearchInput";
 import SearchResult from "./SearchResult";
 import SearchFiltering from "./SearchFiltering";
+import { networkExchangePairs } from './helpers/config';
+
+
 export const TokenSearch = () => {
   const dispatch = useDispatch();
-  const {isSelecting, searchText, isLoading} = useSelector(
+  const { isSelecting, searchText, isLoading } = useSelector(
     (state) => state
   );
   const searchRef = useRef();
+
+  // console.log(selectedExchange.exchange.filter(exchange=> selectedExchange.blockchain.filter(blockchain=>  networkExchangePairs[blockchain])));
 
   useEffect(() => {
     window.onmousedown = (e) => {
@@ -27,10 +32,12 @@ export const TokenSearch = () => {
   return (
     <div ref={searchRef}>
       <SearchInput />
-      {isSelecting && !searchText &&
-      <SearchFiltering/>
+      {isSelecting && //!searchText &&
+        <SearchFiltering />
       }
-      {isSelecting && <SearchResult loading={isLoading} />}
+      {isSelecting &&
+        <SearchResult loading={isLoading} />
+      }
     </div>
   );
 };
