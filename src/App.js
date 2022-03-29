@@ -12,8 +12,8 @@ function App() {
       <br/><br/>
       <div style={{width:"500px", margin:"auto", border:"solid"}}>
         <TokenSearch />
+        {/*  <iframe loading={"lazy"} src={"http://localhost:3000/cookieFramed.html"} height={500}/>*/}
       </div>
-
       </Provider>
     </div>
   );
