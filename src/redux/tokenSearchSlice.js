@@ -3,6 +3,7 @@ import retry from 'async-retry';
 import { stringify } from 'flatted';
 import { searchTokensAsync } from "../tokenSearch/helpers/async";
 import { omitBy } from "lodash"
+import { networkExchangePairs } from '../tokenSearch/helpers/config';
 
 export const setPair = createAsyncThunk(
   'token/setPair',
@@ -34,18 +35,27 @@ export const searchTokenPairs = createAsyncThunk(
     console.log("searchTokenPairs")
     try {
       const { exchangeMap, networkMap } = thunkAPI.getState();
-      const cleanedExchangeMap = omitBy(exchangeMap, (b) => !b)
-      const cleanedNetworkMap = omitBy(networkMap, (b) => !b)
       // console.log("exchangeMap", cleanedExchangeMap, Object.keys(cleanedExchangeMap)[0],"networkMap",cleanedNetworkMap, Object.keys(cleanedNetworkMap)[0])
       const pairSearchTimestamp = new Date().getTime();
       thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
+
+      // const cleanedExchangeMap = omitBy(exchangeMap, (b) => !b)
+      // const cleanedNetworkMap = omitBy(networkMap, (b) => !b)
+      const cleanedNetworkMap = Object.keys(omitBy(networkMap, (b) => !b));
+      const cleanedExchangeMap = Object.keys(omitBy(exchangeMap, (b) => !b));
+
+      // Filtering all valid pairs according to the active blockchains.
+      const validNetworkExchangePairs = networkExchangePairs.filter(pair => cleanedNetworkMap.includes(pair[0]));
+      const validExchanges = cleanedExchangeMap.filter(exchange => validNetworkExchangePairs.filter(pair => pair[1] === exchange).length >= 1);
+
+      console.log(validExchanges);
+
       const data = await retry(
         () => searchTokensAsync(searchString,
           {
-            blockchain: Object.keys(cleanedNetworkMap),
-            exchange: Object.keys(cleanedExchangeMap)
+            blockchain: cleanedNetworkMap[0],
+            exchange: validExchanges[0]
           }
-          //todo remove identifier
           //todo allow multiple blockchains/exchanges
         ),
         { retries: 1 }
