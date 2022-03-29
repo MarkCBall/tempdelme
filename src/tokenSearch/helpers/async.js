@@ -6,7 +6,7 @@ import { romePairsClient } from './graphqlClients';
 const getRomeSearchTokenQuery = (blockchain) => {
   return gql`
   query SearchTokens($searchText: String!, $exchanges: [String!]!) {
-    pair_search: ${blockchain}_pair_search(where: {concat_ws: {_ilike: $searchText}, exchange: {_in:$exchanges}}, limit: 5, order_by: { last_24hour_usd_volume: desc_nulls_last }) {
+    pair_search: ${blockchain}_pair_search(where: {concat_ws: {_ilike: $searchText}, exchange: {_in:$exchanges}}, limit: 500, order_by: { last_24hour_usd_volume: desc_nulls_last }) {
     id: pair_address
       token0 {
         address
