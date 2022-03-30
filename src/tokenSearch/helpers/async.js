@@ -5,16 +5,16 @@ import { romePairsClient } from './graphqlClients';
 
 
 const getRomeSearchTokenQuery = networks => {
-  let networkIterations = networks.length,
-    networkDatasetLength = Math.round(process.env.REACT_APP_SEARCH_ASYNC_DATASET_LENGTH_MAXIMUM / networkIterations),
-    pair_search = ``;
+  let network;
+  let pair_search = ``;
+  const networkDatasetLength = Math.round(process.env.REACT_APP_SEARCH_ASYNC_DATASET_LENGTH_MAXIMUM / networks.length);
 
   // Looping through all networks.
   // Please, take note that the exchanges will be included not taking into account their availability to the specified network as it causes not error.
-  while (networkIterations > 0) {
+  for (network of networks) {
     pair_search += `
-      pair_search_${networkIterations}:
-        ${networks[networkIterations - 1]}_pair_search(
+      ${network}:
+        ${network}_pair_search(
           where:{
             concat_ws:{_ilike:$searchText}, 
             exchange:{_in:$exchanges}
@@ -45,9 +45,6 @@ const getRomeSearchTokenQuery = networks => {
           latest_token0_usd_price
           latest_token1_usd_price
         }`;
-
-    // Decrementing the current network iteration.
-    networkIterations--;
   }
 
   return gql`query SearchTokens($searchText:String!,$exchanges:[String!]!){${pair_search}}`;
@@ -71,11 +68,19 @@ const searchTokenAsync_searchString = searchString => {
 
 // Function that creates the actual async token.
 export const searchTokensAsync = async (searchString, searchNetworks, searchExchanges) => {//, config = { nilVolumeOkay:false }) => {
-  let res,
-    searchText = searchTokenAsync_searchString(searchString),
-    parameters = searchTokenAsync_Parameters(searchText, searchExchanges),
-    query = getRomeSearchTokenQuery(searchNetworks);
+  let res;
+  const searchText = searchTokenAsync_searchString(searchString);
+  const parameters = searchTokenAsync_Parameters(searchText, searchExchanges);
+  const query = getRomeSearchTokenQuery(searchNetworks);
 
+  console.log(searchNetworks, searchExchanges);
+
+
+  // // Makes sure that there are at least one network is active.
+  // if (searchNetworks.length < 1) return [];
+
+  // // Makes sure that there are at least one exchange is active.
+  // if (searchExchanges.length < 1) return [];
 
   try {
     res = await romePairsClient.request(query, parameters);
@@ -85,7 +90,16 @@ export const searchTokensAsync = async (searchString, searchNetworks, searchExch
   }
 
   const mappedPairs = Object
-    .values(res)
+    // Loading an array from each data set comprised of [{networkName},{networkResults}].
+    .entries(res)
+    .map(network => {
+      // Adding the network to the results so we can display this information to the user.
+      network[1].map(result => result.network = network[0]);
+
+      // Returning only the data that is of interest to us.
+      return network[1];
+    })
+    // Flattening all the data sets into one data set.
     .flat()
     .filter(pair => pair.token0 && pair.token1)
     .map(pair => {

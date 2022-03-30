@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import retry from 'async-retry';
 import { stringify } from 'flatted';
 import { searchTokensAsync } from "../tokenSearch/helpers/async";
-import { omitBy } from "lodash"
+import { uniq, omitBy } from "lodash"
 import { networkExchangePairs } from '../tokenSearch/helpers/config';
 
 export const setPair = createAsyncThunk(
@@ -49,13 +49,29 @@ export const searchTokenPairs = createAsyncThunk(
       // Filtering out any exchange that is not valid for the selected networks.
       // This has to be done since an exchange will remain in the array when the network is disabled by the user.
       // It's easier here and also offer a more natural experience for the user.
-      const validExchanges = cleanedExchangeMap.filter(exchange => validNetworkExchangePairs.filter(pair => pair[1] === exchange).length >= 1);
+      let validExchanges = cleanedExchangeMap.filter(exchange => validNetworkExchangePairs.filter(pair => pair[1] === exchange).length >= 1);
 
       // Filtering out any network that does not have at least one valid exchange selected.
       // This has to be done since the user can still have a network selected while it has no valid exchange selected.
       // It's easier here and also offer a more natural experience for the user.
       // Also, this has to be done to avoid negative impacts on the GraphQL query, since it would greatly recude the number of results in each dataset.
-      const validNetworks = cleanedNetworkMap.filter(network => validNetworkExchangePairs.filter(pair => pair[0] === network && validExchanges.includes(pair[1])).length >= 1);
+      let validNetworks = cleanedNetworkMap.filter(network => validNetworkExchangePairs.filter(pair => pair[0] === network && validExchanges.includes(pair[1])).length >= 1);
+
+      // Validate if no networks are selected, thus all networks are selected.
+      if (validNetworks.length === 0) {
+        // Selects all networks.
+        validNetworks = uniq(networkExchangePairs.map(pair => pair[0]));
+      }
+
+      // Validate if no exchanges are selected, thus all exchanges are selected.
+      if (validExchanges.length === 0) {
+        // Selects all networks.
+        validExchanges = uniq(networkExchangePairs.map(pair => pair[1]));
+      }
+
+      // TO DO: OPTIMIZATION!!!!
+      // TO DO: OPTIMIZATION!!!!
+      // TO DO: OPTIMIZATION!!!!
 
       // Loading the data.
       const data = await retry(() => searchTokensAsync(searchString, validNetworks, validExchanges), { retries: 1 });
