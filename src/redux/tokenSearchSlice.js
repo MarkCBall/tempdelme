@@ -32,38 +32,39 @@ const setPairSearchTimestamp = createAsyncThunk(
 export const searchTokenPairs = createAsyncThunk(
   'token/search',
   async (searchString, thunkAPI) => {
-    console.log("searchTokenPairs")
     try {
       const { exchangeMap, networkMap } = thunkAPI.getState();
       // console.log("exchangeMap", cleanedExchangeMap, Object.keys(cleanedExchangeMap)[0],"networkMap",cleanedNetworkMap, Object.keys(cleanedNetworkMap)[0])
       const pairSearchTimestamp = new Date().getTime();
       thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
 
-      // const cleanedExchangeMap = omitBy(exchangeMap, (b) => !b)
-      // const cleanedNetworkMap = omitBy(networkMap, (b) => !b)
+      // We have to use "omitBy" since a network or exchange will remain in the object if a user unselect them, but as false instead of true.
+      // We then load each network and exchange by their key into an array to further filter them.
       const cleanedNetworkMap = Object.keys(omitBy(networkMap, (b) => !b));
       const cleanedExchangeMap = Object.keys(omitBy(exchangeMap, (b) => !b));
 
       // Filtering all valid pairs according to the active blockchains.
       const validNetworkExchangePairs = networkExchangePairs.filter(pair => cleanedNetworkMap.includes(pair[0]));
+
+      // Filtering out any exchange that is not valid for the selected networks.
+      // This has to be done since an exchange will remain in the array when the network is disabled by the user.
+      // It's easier here and also offer a more natural experience for the user.
       const validExchanges = cleanedExchangeMap.filter(exchange => validNetworkExchangePairs.filter(pair => pair[1] === exchange).length >= 1);
 
-      console.log(validExchanges);
+      // Filtering out any network that does not have at least one valid exchange selected.
+      // This has to be done since the user can still have a network selected while it has no valid exchange selected.
+      // It's easier here and also offer a more natural experience for the user.
+      // Also, this has to be done to avoid negative impacts on the GraphQL query, since it would greatly recude the number of results in each dataset.
+      const validNetworks = cleanedNetworkMap.filter(network => validNetworkExchangePairs.filter(pair => pair[0] === network && validExchanges.includes(pair[1])).length >= 1);
 
-      const data = await retry(
-        () => searchTokensAsync(searchString,
-          {
-            blockchain: cleanedNetworkMap[0],
-            exchange: validExchanges[0]
-          }
-          //todo allow multiple blockchains/exchanges
-        ),
-        { retries: 1 }
-      );
-      console.log("data", data)
+      // Loading the data.
+      const data = await retry(() => searchTokensAsync(searchString, validNetworks, validExchanges), { retries: 1 });
+
+      // console.log("data", data);
       return { data, pairSearchTimestamp };
-    } catch (e) {
-      console.log("err searchTokenPairs", e)
+    }
+    catch (e) {
+      console.log("err searchTokenPairs", e);
       throw new Error(stringify(e, Object.getOwnPropertyNames(e)));
     }
   }

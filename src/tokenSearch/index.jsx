@@ -22,8 +22,6 @@ export const TokenSearch = () => {
         dispatch(stopSelecting());
       }
     };
-    //todo return remove onclick
-    //todo useOnClickOutside might be a better implementation?
   }, [dispatch]);
 
   return (
