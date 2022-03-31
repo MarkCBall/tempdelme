@@ -4,13 +4,13 @@ import { gql } from 'graphql-request';
 import { romePairsClient } from './graphqlClients';
 
 
-const getRomeSearchTokenQuery = networks => {
+const getRomeSearchTokenQuery = (networks, exchanges) => {
   let network;
   let pair_search = ``;
   const networkDatasetLength = Math.round(process.env.REACT_APP_SEARCH_ASYNC_DATASET_LENGTH_MAXIMUM / networks.length);
 
+
   // Looping through all networks.
-  // Please, take note that the exchanges will be included not taking into account their availability to the specified network as it causes not error.
   for (network of networks) {
     pair_search += `
       ${network}:
@@ -71,23 +71,24 @@ export const searchTokensAsync = async (searchString, searchNetworks, searchExch
   let res;
   const searchText = searchTokenAsync_searchString(searchString);
   const parameters = searchTokenAsync_Parameters(searchText, searchExchanges);
-  const query = getRomeSearchTokenQuery(searchNetworks);
-
-  console.log(searchNetworks, searchExchanges);
+  const query = getRomeSearchTokenQuery(searchNetworks, searchExchanges);
 
 
-  // // Makes sure that there are at least one network is active.
-  // if (searchNetworks.length < 1) return [];
-
-  // // Makes sure that there are at least one exchange is active.
-  // if (searchExchanges.length < 1) return [];
-
+  // IMPORTANT!!!
+  // IMPORTANT!!!
+  // Fun fact, we are injecting ALL active exchanges for ANY network, wheter it is support or not.
+  // This does not cause any errors at the moment, but this makes the query QUITE nasty.
+  // This should be handled at some point.
+  // IMPORTANT!!!
+  // IMPORTANT!!!
   try {
     res = await romePairsClient.request(query, parameters);
   }
   catch (e) {
     throw new Error(`${stringify(e, Object.getOwnPropertyNames(e))}, args:${stringify({ parameters, query, })}`);
   }
+  // IMPORTANT!!!
+  // IMPORTANT!!!
 
   const mappedPairs = Object
     // Loading an array from each data set comprised of [{networkName},{networkResults}].

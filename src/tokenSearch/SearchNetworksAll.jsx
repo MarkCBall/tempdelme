@@ -2,7 +2,7 @@ import React from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { setNetworkMap } from "../redux/tokenSearchSlice"
 import { omitBy } from "lodash"
-
+import { networkExchangePairs } from "./helpers/config";
 
 //todo new file
 export const SearchNetworksAll = () => {

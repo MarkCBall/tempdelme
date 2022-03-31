@@ -29,52 +29,85 @@ const setPairSearchTimestamp = createAsyncThunk(
   }
 );
 
+
+// Function that handles the "All" values of both the network and the exchange.
+// Consider that "no value" equates "All".
+const allValueHandler = (networkMap, exchangeMap) => {
+  let returnedNetworkMap = networkMap;
+  let returnedExchangeMap = exchangeMap;
+
+
+  // Validates that the networkMap contains the "All" value.
+  // If "All" is active, it overrides all other networks; thus we enable all the networks.
+  if (networkMap.length === 0 || networkMap.includes('All')) {
+    // Loads all the networks from "networkExchangePairs".
+    returnedNetworkMap = uniq(networkExchangePairs.map(pair => pair[0]));
+  }
+
+  // Validates that the networkMap contains the "All" value.
+  // If "All" is active, it overrides all other networks; thus we enable all the networks.
+  if (exchangeMap.length === 0 || exchangeMap.includes('All')) {
+    // Loads all the networks from "networkExchangePairs".
+    returnedExchangeMap = uniq(networkExchangePairs.map(pair => pair[1]));
+  }
+
+
+  // Returns the processed values of "networkMap" and "exchangeMap".
+  return [returnedNetworkMap, returnedExchangeMap];
+};
+
+// Function that handles the "All" values of both the network and the exchange.
+const valueCleaner = (networkMap, exchangeMap) => {
+  // We have to use "omitBy" since a network or exchange will remain in the object if a user unselect them, but as false instead of true.
+  // We then load each network and exchange by their key into an array to further filter them.
+  networkMap = Object.keys(omitBy(networkMap, (b) => !b));
+  exchangeMap = Object.keys(omitBy(exchangeMap, (b) => !b));
+
+
+  // Returns the processed values of "networkMap" and "exchangeMap".
+  return [networkMap, exchangeMap];
+};
+
+
 export const searchTokenPairs = createAsyncThunk(
   'token/search',
   async (searchString, thunkAPI) => {
     try {
-      const { exchangeMap, networkMap } = thunkAPI.getState();
-      // console.log("exchangeMap", cleanedExchangeMap, Object.keys(cleanedExchangeMap)[0],"networkMap",cleanedNetworkMap, Object.keys(cleanedNetworkMap)[0])
+      let { networkMap, exchangeMap } = thunkAPI.getState();
+      let processedNetworks;
+      let processedExchanges;
       const pairSearchTimestamp = new Date().getTime();
+      console.log(networkMap, exchangeMap);
+
+
+      // Dispatches "setPairSearchTimestamp".
       thunkAPI.dispatch(setPairSearchTimestamp(pairSearchTimestamp));
 
-      // We have to use "omitBy" since a network or exchange will remain in the object if a user unselect them, but as false instead of true.
-      // We then load each network and exchange by their key into an array to further filter them.
-      const cleanedNetworkMap = Object.keys(omitBy(networkMap, (b) => !b));
-      const cleanedExchangeMap = Object.keys(omitBy(exchangeMap, (b) => !b));
+      // Runs the function handling the cleaning of the properties from their values indicating if they are enabled or not.
+      [processedNetworks, processedExchanges] = valueCleaner(networkMap, exchangeMap);
 
-      // Filtering all valid pairs according to the active blockchains.
-      const validNetworkExchangePairs = networkExchangePairs.filter(pair => cleanedNetworkMap.includes(pair[0]));
+      // Runs the function handling the management of the "All" value selected by the user.
+      [processedNetworks, processedExchanges] = allValueHandler(processedNetworks, processedExchanges);
 
       // Filtering out any exchange that is not valid for the selected networks.
       // This has to be done since an exchange will remain in the array when the network is disabled by the user.
       // It's easier here and also offer a more natural experience for the user.
-      let validExchanges = cleanedExchangeMap.filter(exchange => validNetworkExchangePairs.filter(pair => pair[1] === exchange).length >= 1);
+      processedExchanges = processedExchanges
+        .filter(exchange => networkExchangePairs
+          .filter(pair => processedNetworks.includes(pair[0]) && pair[1] === exchange).length >= 1);
 
       // Filtering out any network that does not have at least one valid exchange selected.
       // This has to be done since the user can still have a network selected while it has no valid exchange selected.
       // It's easier here and also offer a more natural experience for the user.
-      // Also, this has to be done to avoid negative impacts on the GraphQL query, since it would greatly recude the number of results in each dataset.
-      let validNetworks = cleanedNetworkMap.filter(network => validNetworkExchangePairs.filter(pair => pair[0] === network && validExchanges.includes(pair[1])).length >= 1);
-
-      // Validate if no networks are selected, thus all networks are selected.
-      if (validNetworks.length === 0) {
-        // Selects all networks.
-        validNetworks = uniq(networkExchangePairs.map(pair => pair[0]));
-      }
-
-      // Validate if no exchanges are selected, thus all exchanges are selected.
-      if (validExchanges.length === 0) {
-        // Selects all networks.
-        validExchanges = uniq(networkExchangePairs.map(pair => pair[1]));
-      }
-
-      // TO DO: OPTIMIZATION!!!!
-      // TO DO: OPTIMIZATION!!!!
-      // TO DO: OPTIMIZATION!!!!
+      // We do this in last because this has a real potential to harm the user experience by running GraphQL queries that are not needed unlike feeding to the
+      // query an unused echange for a given network.
+      processedNetworks = processedNetworks
+        .filter(network => networkExchangePairs
+          .filter(pair => pair[0] === network && processedExchanges.includes(pair[1])).length >= 1);
+      console.log(processedNetworks, processedExchanges);
 
       // Loading the data.
-      const data = await retry(() => searchTokensAsync(searchString, validNetworks, validExchanges), { retries: 1 });
+      const data = await retry(() => searchTokensAsync(searchString, processedNetworks, processedExchanges), { retries: 1 });
 
       // console.log("data", data);
       return { data, pairSearchTimestamp };
