@@ -27,8 +27,7 @@ export const TokenSearch = () => {
   return (
     <div ref={searchRef}>
       <SearchInput />
-      <NetworkFilter />
-     
+      <NetworkFilter /> 
      
       {isSelecting && <SearchResult loading={isLoading} />}
     </div>

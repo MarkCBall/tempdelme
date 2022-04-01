@@ -1,10 +1,10 @@
 import React from "react"
+import { useDispatch, useSelector } from 'react-redux';
 import { uniq } from "lodash"
 import { networkExchangePairs } from "./helpers/config";
-import { SearchNetworkSelector } from "./SearchNetworksSelector";
-import { SearchNetworksAll } from "./SearchNetworksAll";
+import { setNetworkMap } from "../redux/tokenSearchSlice"
 import styled from 'styled-components';
-
+import Chip from '../Components/Chip';
 
 const NetworkList = styled.div`
   display:flex;
@@ -14,15 +14,25 @@ const NetworkList = styled.div`
 `;
 
 export const SearchNetworks = () => {
+  const dispatch = useDispatch();
+  const { networkMap } = useSelector((state) => state);
+
+  const handleChange = (e) => {    
+    const {checked, value: networkName} = e.target
+    dispatch(setNetworkMap({ networkName, checked }));
+  }
+
+  console.log('[networkMap]: ', networkMap)
+
   return (
     <>      
       <NetworkList>
-        <SearchNetworksAll key={'All'} />
+        <Chip label='All' onChange={handleChange} key={'allNetworks'} name='all' value='all' />    
         {
           uniq(networkExchangePairs
             .map(pair => pair[0]))
             .map(networkName => {
-              return <SearchNetworkSelector key={networkName} networkName={networkName} />
+              return <Chip label={networkName} onChange={handleChange} key={networkName} name='networks' value={networkName} />
             })
         }
       </NetworkList>

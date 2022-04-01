@@ -10,7 +10,6 @@ export const SearchNetworksAll = () => {
   const { networkMap } = useSelector((state) => state);
   let networkName = 'All';
 
-
   return (
     <>
       <input

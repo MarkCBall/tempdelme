@@ -4,8 +4,6 @@ export const romeTokenSyncUri = String(
     'https://romenet.prod.velox.global/v1/graphql'
 ).replace('ws', 'http');
 
-
-
 const AvalanchePairs = [
   ["avalanche","baguette"],
   ["avalanche","canary"],

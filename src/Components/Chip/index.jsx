@@ -3,11 +3,11 @@ import './style.css'
 
 export const Chip = memo(
   (props) => {
-    const {label, checked, onChange} = props
+    const {label, checked, onChange, name, value} = props
     return (
       <>
-        <input type="checkbox" id={label} onChange={onChange} checked={checked}/>
-        <label for={label}>{label} </label>
+        <input type="checkbox" id={label} onChange={onChange} checked={checked} name={name} value={value}/>
+        <label htmlFor={label}>{label} </label>
       </>
     )
   }

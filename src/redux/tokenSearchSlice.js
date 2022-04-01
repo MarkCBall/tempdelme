@@ -193,7 +193,7 @@ export const tokenSearchSlice = createSlice({
     setNetworkMap: (state, action) => {
       console.log(action)
       state.networkMap[action.payload.networkName] = action.payload.checked
-    }
+    }, 
   },
 });
 
