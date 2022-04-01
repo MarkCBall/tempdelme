@@ -6,9 +6,8 @@ import {
 } from '../redux/tokenSearchSlice';
 import SearchInput from "./SearchInput";
 import SearchResult from "./SearchResult";
-import SearchNetworks from "./SearchNetworks";
-import SearchExchanges from "./SearchExchanges";
 
+import NetworkFilter from "./NetworkFilter.jsx";
 
 export const TokenSearch = () => {
   const dispatch = useDispatch();
@@ -28,8 +27,9 @@ export const TokenSearch = () => {
   return (
     <div ref={searchRef}>
       <SearchInput />
-      {isSelecting && <SearchNetworks />}
-      {isSelecting && <SearchExchanges />}
+      <NetworkFilter />
+     
+     
       {isSelecting && <SearchResult loading={isLoading} />}
     </div>
   );

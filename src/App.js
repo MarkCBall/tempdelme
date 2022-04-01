@@ -10,7 +10,7 @@ function App() {
       <Provider store={store}>
       <br/><br/><br/><br/><br/><br/>
       <br/><br/>
-      <div style={{width:"500px", margin:"auto", border:"solid"}}>
+      <div style={{width:"500px", margin:"auto"}}>
         <TokenSearch />
         {/*  <iframe loading={"lazy"} src={"http://localhost:3000/cookieFramed.html"} height={500}/>*/}
       </div>

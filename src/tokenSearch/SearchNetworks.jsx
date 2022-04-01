@@ -15,7 +15,7 @@ const NetworkList = styled.div`
 
 export const SearchNetworks = () => {
   return (
-    <>
+    <>      
       <NetworkList>
         <SearchNetworksAll key={'All'} />
         {
