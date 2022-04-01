@@ -1,20 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  searchTokenPairs,
-  stopSelecting,
-} from '../redux/tokenSearchSlice';
+import { stopSelecting } from '../redux/tokenSearchSlice';
 import SearchInput from "./SearchInput";
 import SearchResult from "./SearchResult";
-import SearchNetworks from "./SearchNetworks";
-import SearchExchanges from "./SearchExchanges";
+import SearchFilters from "./filters";
 
 
 export const TokenSearch = () => {
   const dispatch = useDispatch();
-  const { isSelecting, searchText, isLoading } = useSelector(
-    (state) => state
-  );
+  const { isSelecting, isLoading } = useSelector((state) => state);
   const searchRef = useRef();
 
   useEffect(() => {
@@ -25,11 +19,11 @@ export const TokenSearch = () => {
     };
   }, [dispatch]);
 
+
   return (
     <div ref={searchRef}>
       <SearchInput />
-      {isSelecting && <SearchNetworks />}
-      {isSelecting && <SearchExchanges />}
+      <SearchFilters />
       {isSelecting && <SearchResult loading={isLoading} />}
     </div>
   );

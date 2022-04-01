@@ -1,8 +1,8 @@
 import React from "react"
 import { uniqBy } from "lodash"
-import { networkExchangePairs } from "./helpers/config";
+import { networkExchangePairs } from "../../helpers/config";
 import { useDispatch, useSelector } from 'react-redux';
-import { setExchangeMap } from "../redux/tokenSearchSlice";
+import { setExchangeMap } from "../../../redux/tokenSearchSlice";
 import styled from 'styled-components';
 
 

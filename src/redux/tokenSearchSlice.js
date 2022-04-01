@@ -110,6 +110,7 @@ export const searchTokenPairs = createAsyncThunk(
       const data = await retry(() => searchTokensAsync(searchString, processedNetworks, processedExchanges), { retries: 1 });
 
       // console.log("data", data);
+      console.log("data", data.length);
       return { data, pairSearchTimestamp };
     }
     catch (e) {
