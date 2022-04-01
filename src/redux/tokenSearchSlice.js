@@ -118,6 +118,10 @@ export const searchTokenPairs = createAsyncThunk(
     }
   }
 );
+const initNetworks =  uniq(networkExchangePairs
+  .map(pair => pair[0]))
+  .map(networkName => networkName).reduce((k, v) => ({...k, [v]: false}), {})
+
 
 const initialTimestamp = new Date().getTime();
 const initialState = {
@@ -130,7 +134,7 @@ const initialState = {
   serializedTradeEstimator: '',
   suggestions: [],
   exchangeMap: {},
-  networkMap: {}
+  networkMap: initNetworks
 };
 
 export const tokenSearchSlice = createSlice({
@@ -188,11 +192,27 @@ export const tokenSearchSlice = createSlice({
       state.isSelecting = !state.isSelecting;
     },
     setExchangeMap: (state, action) => {
-      state.exchangeMap[action.payload.exchangeName] = action.payload.checked
+      const {checked, exchangeName} = action.payload
+      if (exchangeName === 'all') {
+        
+      } else
+        state.exchangeMap[exchangeName] = checked
+
+
+        console.log(state.exchangeMap, '?>>>>>>>>>>>>>>>')
     },
     setNetworkMap: (state, action) => {
-      console.log(action)
-      state.networkMap[action.payload.networkName] = action.payload.checked
+      const {checked, networkName} = action.payload
+
+      if (networkName === 'all') {
+        const allNetworks = uniq(networkExchangePairs
+          .map(pair => pair[0]))
+          .map(networkName => networkName)
+        allNetworks.forEach((network) => {
+          state.networkMap[network] = checked
+        }) 
+      } else
+        state.networkMap[networkName] = checked
     }, 
   },
 });

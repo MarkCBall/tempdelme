@@ -5,18 +5,18 @@ input[type="checkbox"] {
 input[type="checkbox"] + label {
   -webkit-transition: all 500ms ease;
   transition: all 500ms ease;
-  font-size: 18px;
+  font-size: 14px;
   cursor: pointer;
-  border-radius: 50px;
+  border-radius: 5px;
   background-color: #fff;
   border:solid 2px #7d7d7d;
-  padding: 0.5rem 2rem;
+  padding: 0.1rem 0.3rem;
   display: inline-block;
   -moz-user-select: -moz-none;
   -webkit-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  margin: 10px;
+  margin: 5px;
 }
 
 

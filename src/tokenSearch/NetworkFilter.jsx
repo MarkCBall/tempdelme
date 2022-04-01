@@ -15,17 +15,16 @@ import SearchExchanges from "./SearchExchanges";
 import './../Components/accordion.css'
 
 export const NetworkFilter = () => {
-  const { isSelecting, searchText, isLoading, networkMap } = useSelector(
+  const { isSelecting, searchText, exchangeMap, networkMap } = useSelector(
     (state) => state
   );
-
-  console.log('networkMap: ', networkMap)
+    
   return (<>
    <Accordion allowZeroExpanded>
       <AccordionItem>
         <AccordionItemHeading>
           <AccordionItemButton >
-            Filter Networks
+            Filter Networks: search {}
           </AccordionItemButton>
         </AccordionItemHeading>
         <AccordionItemPanel>

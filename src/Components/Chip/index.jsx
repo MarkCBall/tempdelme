@@ -6,8 +6,8 @@ export const Chip = memo(
     const {label, checked, onChange, name, value} = props
     return (
       <>
-        <input type="checkbox" id={label} onChange={onChange} checked={checked} name={name} value={value}/>
-        <label htmlFor={label}>{label} </label>
+        <input type="checkbox" id={`${label}-${name}`} onChange={onChange} checked={checked} name={name} value={value}/>
+        <label htmlFor={`${label}-${name}`}>{label} </label>
       </>
     )
   }

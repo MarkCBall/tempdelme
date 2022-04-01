@@ -4,7 +4,7 @@ import { networkExchangePairs } from "./helpers/config";
 import { useDispatch, useSelector } from 'react-redux';
 import { setExchangeMap } from "../redux/tokenSearchSlice";
 import styled from 'styled-components';
-
+import Chip from '../Components/Chip';
 
 const ExchangeList = styled.div`
   border-top:solid 1px #000;
@@ -13,34 +13,24 @@ const ExchangeList = styled.div`
   justify-content:center;
   padding:3px;
 `;
-
-
-//todo new file
-const ExchangeSelection = ({ exchangeName }) => {
-  const dispatch = useDispatch();
-  const { exchangeMap } = useSelector((state) => state);
-
-  return <>
-    <input
-      checked={exchangeMap[exchangeName] || false}
-      type="checkbox"
-      onChange={(e) => dispatch(setExchangeMap({ exchangeName, checked: e.target.checked }))}
-    />
-    {exchangeName}
-  </>
-}
-
+ 
 export const SearchExchanges = () => {
-  const { networkMap } = useSelector((state) => state);
+  const dispatch = useDispatch();
+  const { exchangeMap, networkMap } = useSelector((state) => state);
 
+  const handleChange = (e) => {    
+    const {checked, value: exchangeName} = e.target    
+    dispatch(setExchangeMap({ exchangeName, checked }));
+  }
 
   return (
     <>
       <ExchangeList>
-        {<ExchangeSelection key={'*'} exchangeName={'All'} />}
+        <Chip label='All' onChange={handleChange} key={'allExchanges'} name='exchanges' value='all'  />  
+        
         {uniqBy(networkExchangePairs.filter(pair => networkMap[pair[0]]), 1).map(pair => {
           const exchangeName = pair[1]
-          return <ExchangeSelection key={exchangeName} exchangeName={exchangeName} />
+          return <Chip key={exchangeName} label={exchangeName} onChange={handleChange} name='exchanges' value={exchangeName} checked={exchangeMap[exchangeName]}/>
         })}
       </ExchangeList>
     </>

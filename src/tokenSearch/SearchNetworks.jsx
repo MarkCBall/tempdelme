@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { uniq } from "lodash"
 import { networkExchangePairs } from "./helpers/config";
@@ -22,17 +22,21 @@ export const SearchNetworks = () => {
     dispatch(setNetworkMap({ networkName, checked }));
   }
 
-  console.log('[networkMap]: ', networkMap)
+  const isAllChecked = useMemo(() => {
+    return Object.keys(networkMap).length > 0 && 
+            Object.keys(networkMap).length === Object.values(networkMap).filter((e) => e === true).length
+  }, [networkMap])
 
+   
   return (
     <>      
       <NetworkList>
-        <Chip label='All' onChange={handleChange} key={'allNetworks'} name='all' value='all' />    
+        <Chip label='All' onChange={handleChange} key={'allNetworks'} name='networks' value='all' checked={isAllChecked} />    
         {
           uniq(networkExchangePairs
             .map(pair => pair[0]))
             .map(networkName => {
-              return <Chip label={networkName} onChange={handleChange} key={networkName} name='networks' value={networkName} />
+              return <Chip label={networkName} onChange={handleChange} key={networkName} name='networks' value={networkName} checked={networkMap[networkName]}/>
             })
         }
       </NetworkList>
