@@ -77,7 +77,6 @@ export const searchTokenPairs = createAsyncThunk(
       let processedNetworks;
       let processedExchanges;
       const pairSearchTimestamp = new Date().getTime();
-      console.log(networkMap, exchangeMap);
 
 
       // Dispatches "setPairSearchTimestamp".
@@ -104,7 +103,6 @@ export const searchTokenPairs = createAsyncThunk(
       processedNetworks = processedNetworks
         .filter(network => networkExchangePairs
           .filter(pair => pair[0] === network && processedExchanges.includes(pair[1])).length >= 1);
-      console.log(processedNetworks, processedExchanges);
 
       // Loading the data.
       const data = await retry(() => searchTokensAsync(searchString, processedNetworks, processedExchanges), { retries: 1 });
@@ -189,15 +187,51 @@ export const tokenSearchSlice = createSlice({
       state.isSelecting = !state.isSelecting;
     },
     setExchangeMap: (state, action) => {
-      state.exchangeMap[action.payload.exchangeName] = action.payload.checked
+      // Setting the payload exchange name to the payload value.
+      state.exchangeMap[action.payload.exchangeName] = action.payload.checked;
+    },
+    setExchangeMapAll: (state, action) => {
+      let exchangeName;
+
+
+      // Loops through the network names.
+      for (exchangeName of action.payload.exchangeNames) {
+        // Validate if "all exchange" is active.
+        if (action.payload.exchangeAll) {
+          // Sets all networks to true.
+          state.exchangeMap[exchangeName] = true;
+        }
+        else {
+          // Removes all manual networks.
+          delete state.exchangeMap[exchangeName]
+        }
+      };
+      // Object.keys(state.exchangeMap).map(key => delete state.exchangeMap[key]);
     },
     setNetworkMap: (state, action) => {
-      console.log(action)
-      state.networkMap[action.payload.networkName] = action.payload.checked
+      // Setting the payload network name to the payload value.
+      state.networkMap[action.payload.networkName] = action.payload.checked;
+    },
+    setNetworkMapAll: (state, action) => {
+      let networkName;
+
+
+      // Loops through the network names.
+      for (networkName of action.payload.networkNames) {
+        // Validate if "all network" is active.
+        if (action.payload.networkAll) {
+          // Sets all networks to true.
+          state.networkMap[networkName] = true;
+        }
+        else {
+          // Removes all manual networks.
+          delete state.networkMap[networkName]
+        }
+      };
     }
   },
 });
 
-export const { setSearchText, startSelecting, stopSelecting, toggleSelecting, setExchangeMap, setNetworkMap } =
+export const { setSearchText, startSelecting, stopSelecting, toggleSelecting, setExchangeMap, setExchangeMapAll, setNetworkMap, setNetworkMapAll } =
   tokenSearchSlice.actions;
 export default tokenSearchSlice.reducer;

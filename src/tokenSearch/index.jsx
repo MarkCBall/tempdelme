@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { stopSelecting } from '../redux/tokenSearchSlice';
 import SearchInput from "./SearchInput";
 import SearchResult from "./SearchResult";
-import SearchFilters from "./filters";
+import SearchFilters from "./SearchFilters";
 
 
 export const TokenSearch = () => {
@@ -18,7 +18,7 @@ export const TokenSearch = () => {
       }
     };
   }, [dispatch]);
-
+  
 
   return (
     <div ref={searchRef}>

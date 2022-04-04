@@ -1,15 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-
+import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText } from '../redux/tokenSearchSlice';
 import magnifyingGlass from './icon-search.svg';
-import {
-  searchTokenPairs,
-  setSearchText,
-  startSelecting,
-  stopSelecting,
-  toggleSelecting,
-} from '../redux/tokenSearchSlice';
+
 
 const PairField = styled.div`
   display: block;
@@ -55,41 +49,32 @@ const HideOnSmallScreen = styled.img`
   }
 `;
 
-// const combinePairText = (pair) => {
-//   if (pair.token0?.symbol && pair.token1?.symbol && pair.id) {
-//     const miniAddress = pair.id.slice(0, 8) + '...' + pair.id.slice(-8);
-//     return pair.token0?.symbol + '/' + pair.token1?.symbol + '/' + miniAddress;
-//   }
-//   return '';
-// };
-
-const input_onChange = (e, dispatch) => {
-  const newInputText = e.target.value;
-
-  // Ensure that the search text fulfills the minimum lenght requirement.
-  if (newInputText.length >= process.env.REACT_APP_SEARCH_INPUT_LENGTH_MINIMUM) {
-    dispatch(searchTokenPairs(newInputText));
-    // dispatch(setSearchText(newInputText));
-  }
-};
 
 const SearchInput = () => {
   const dispatch = useDispatch();
-  const searchText = useSelector((state) => state?.searchText);
+  const { searchText, networkMap, exchangeMap } = useSelector((state) => state);
   const isSelecting = useSelector((state) => state?.isSelecting);
   const isLoading = useSelector((state) => state.isLoading);
   const fetchError = useSelector((state) => state?.fetchError);
   const selectedPair = useSelector((state) => state?.selectedPair);
 
 
+  // Updates the datasets of the results.
+  useEffect(() => {
+    // Ensure that the search text fulfills the minimum lenght requirement.
+    if (searchText.length >= process.env.REACT_APP_SEARCH_INPUT_LENGTH_MINIMUM) {
+      dispatch(searchTokenPairs(searchText));
+    }
+  }, [dispatch, searchText, networkMap, exchangeMap]);
+
+  
+  // RENDERING.
   return (
     <PairField onClick={() => dispatch(startSelecting())}>
       <StyledInput
         placeholder={'Select a token pair'}
         autocomplete={'off'}
-        // value={value}
-        onChange={e => input_onChange(e, dispatch)}
-      // onKeyDown={onKeyDown}
+        onChange={e => dispatch(setSearchText(e.target.value))}
       />
       <HideOnSmallScreen
         alt={''}
@@ -98,6 +83,9 @@ const SearchInput = () => {
       />
     </PairField>
   );
+};
+export default SearchInput;
+
 
   // const selectedPairText = selectedPair && combinePairText(selectedPair);
 
@@ -124,5 +112,10 @@ const SearchInput = () => {
   // } else {
   //   value = selectedPairText || 'Select a token pair..';
   // }
-};
-export default SearchInput;
+// const combinePairText = (pair) => {
+//   if (pair.token0?.symbol && pair.token1?.symbol && pair.id) {
+//     const miniAddress = pair.id.slice(0, 8) + '...' + pair.id.slice(-8);
+//     return pair.token0?.symbol + '/' + pair.token1?.symbol + '/' + miniAddress;
+//   }
+//   return '';
+// };

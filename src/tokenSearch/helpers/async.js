@@ -4,7 +4,7 @@ import { gql } from 'graphql-request';
 import { romePairsClient } from './graphqlClients';
 
 
-const getRomeSearchTokenQuery = (networks, exchanges) => {
+const getRomeSearchTokenQuery = (networks) => {
   let network;
   let pair_search = ``;
   const networkDatasetLength = Math.round(process.env.REACT_APP_SEARCH_ASYNC_DATASET_LENGTH_MAXIMUM / networks.length);
@@ -71,9 +71,9 @@ export const searchTokensAsync = async (searchString, searchNetworks, searchExch
   let res;
   const searchText = searchTokenAsync_searchString(searchString);
   const parameters = searchTokenAsync_Parameters(searchText, searchExchanges);
-  const query = getRomeSearchTokenQuery(searchNetworks, searchExchanges);
+  const query = getRomeSearchTokenQuery(searchNetworks);
 
-
+  
   // IMPORTANT!!!
   // IMPORTANT!!!
   // Fun fact, we are injecting ALL active exchanges for ANY network, wheter it is support or not.
