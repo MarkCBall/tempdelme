@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import retry from 'async-retry';
 import { stringify } from 'flatted';
 import { searchTokensAsync } from "../tokenSearch/helpers/async";
-import { uniq, omitBy } from "lodash"
+import { uniq, omitBy, uniqBy } from "lodash"
 import { networkExchangePairs } from '../tokenSearch/helpers/config';
 
 export const setPair = createAsyncThunk(
@@ -122,6 +122,16 @@ const initNetworks =  uniq(networkExchangePairs
   .map(pair => pair[0]))
   .map(networkName => networkName).reduce((k, v) => ({...k, [v]: false}), {})
 
+const initExchanges = {}
+uniq(networkExchangePairs.map((exchange) => {
+  const netName = exchange[0]
+  const exchangeName = exchange[1]
+
+  if (!Object.keys(initExchanges).includes(netName)) 
+  initExchanges[netName] = {}
+  initExchanges[netName][exchangeName] = false
+  return false
+}))
 
 const initialTimestamp = new Date().getTime();
 const initialState = {
@@ -133,7 +143,7 @@ const initialState = {
   selectedPair: undefined,
   serializedTradeEstimator: '',
   suggestions: [],
-  exchangeMap: {},
+  exchangeMap: initExchanges,
   networkMap: initNetworks
 };
 
@@ -192,15 +202,34 @@ export const tokenSearchSlice = createSlice({
       state.isSelecting = !state.isSelecting;
     },
     setExchangeMap: (state, action) => {
-      const {checked, exchangeName} = action.payload
-      if (exchangeName === 'all') {
-        
-      } else
-        state.exchangeMap[exchangeName] = checked
+      const {checked, exchangeName, networkName} = action.payload
+      
+      
+      if (exchangeName === 'all') {       
+        uniq(networkExchangePairs).map(pair => {
+          const exName = pair[1]
+          const netName = pair[0]
+          
+          if (!Object.keys(state.exchangeMap).includes(netName)) 
+            state.exchangeMap[netName] = {}
 
+          state.exchangeMap[netName][exName] = checked
+          return checked
+        })
+      } else {
+        if (networkName !== undefined)
+          state.exchangeMap[networkName][exchangeName] = checked
 
-        console.log(state.exchangeMap, '?>>>>>>>>>>>>>>>')
+        Object.keys(state.networkMap).filter(netName => { 
+          if(state.networkMap[netName] === true && Object.keys(state.exchangeMap[netName]).includes(exchangeName.toString())) {                   
+            state.exchangeMap[netName][exchangeName] = checked
+          }
+          return false
+        })
+         
+      }
     },
+    
     setNetworkMap: (state, action) => {
       const {checked, networkName} = action.payload
 
