@@ -18,7 +18,6 @@ export const TokenSearch = () => {
       }
     };
   }, [dispatch]);
-  
 
   return (
     <div ref={searchRef}>

@@ -154,7 +154,7 @@ export const tokenSearchSlice = createSlice({
       state.selectedPair = action.payload;
     });
     builder.addCase(searchTokenPairs.pending, (state) => {
-      // state.isLoading = true
+      state.isLoading = true;
       state.fetchError = null;
     });
     builder.addCase(searchTokenPairs.fulfilled, (state, action) => {
