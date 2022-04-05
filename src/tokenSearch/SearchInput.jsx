@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText } from '../redux/tokenSearchSlice';
+import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText, startDebounce, setDebounce } from '../redux/tokenSearchSlice';
 import magnifyingGlass from './icon-search.svg';
 
 
@@ -50,31 +50,46 @@ const HideOnSmallScreen = styled.img`
 `;
 
 
-const SearchInput = () => {
+const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
   const dispatch = useDispatch();
-  const { searchText, networkMap, exchangeMap } = useSelector((state) => state);
-  const isSelecting = useSelector((state) => state?.isSelecting);
-  const isLoading = useSelector((state) => state.isLoading);
-  const fetchError = useSelector((state) => state?.fetchError);
-  const selectedPair = useSelector((state) => state?.selectedPair);
+  const { searchText, networkMap, exchangeMap, searchDebounce } = useSelector((state) => state);
+  // const isSelecting = useSelector((state) => state?.isSelecting);
+  // const isLoading = useSelector((state) => state.isLoading);
+  // const fetchError = useSelector((state) => state?.fetchError);
+  // const selectedPair = useSelector((state) => state?.selectedPair);
 
 
   // Updates the datasets of the results.
-  useEffect(() => {
-    // Ensure that the search text fulfills the minimum lenght requirement.
-    if (searchText.length >= process.env.REACT_APP_SEARCH_INPUT_LENGTH_MINIMUM) {
-      dispatch(searchTokenPairs(searchText));
-    }
-  }, [dispatch, searchText, networkMap, exchangeMap]);
+  useEffect(
+    () => {
+      dispatch(
+        setDebounce(
+          setTimeout(
+            () => {
+              // Ensure that the search text fulfills the minimum lenght requirement.
+              if (searchText.length < inputLengthMinimum) return;
 
-  
+              dispatch(searchTokenPairs(searchText));
+            },
+            debounceDelay - (new Date().getTime() - searchDebounce)
+          )
+        )
+      );
+    },
+    [dispatch, searchText, networkMap, exchangeMap, inputLengthMinimum, searchDebounce, debounceDelay]
+  );
+
+
   // RENDERING.
   return (
     <PairField onClick={() => dispatch(startSelecting())}>
       <StyledInput
         placeholder={'Select a token pair'}
         autocomplete={'off'}
-        onChange={e => dispatch(setSearchText(e.target.value))}
+        onChange={e => {
+          dispatch(startDebounce());
+          dispatch(setSearchText(e.target.value));
+        }}
       />
       <HideOnSmallScreen
         alt={''}

@@ -154,7 +154,7 @@ export const tokenSearchSlice = createSlice({
       state.selectedPair = action.payload;
     });
     builder.addCase(searchTokenPairs.pending, (state) => {
-      state.isLoading = true;
+      // state.isLoading = true
       state.fetchError = null;
     });
     builder.addCase(searchTokenPairs.fulfilled, (state, action) => {
@@ -176,6 +176,13 @@ export const tokenSearchSlice = createSlice({
   reducers: {
     setSearchText: (state, action) => {
       state.searchText = action.payload;
+    },
+    setDebounce: (state, action) => {
+      clearTimeout(state.searchDebounceAction );
+      state.searchDebounceAction = action.payload;
+    },
+    startDebounce: (state) => {
+      state.searchDebounce = new Date().getTime();
     },
     startSelecting: (state) => {
       state.isSelecting = true;
@@ -232,6 +239,16 @@ export const tokenSearchSlice = createSlice({
   },
 });
 
-export const { setSearchText, startSelecting, stopSelecting, toggleSelecting, setExchangeMap, setExchangeMapAll, setNetworkMap, setNetworkMapAll } =
-  tokenSearchSlice.actions;
+export const {
+  setSearchText,
+  startSelecting,
+  stopSelecting,
+  toggleSelecting,
+  setExchangeMap,
+  setExchangeMapAll,
+  setNetworkMap,
+  setNetworkMapAll,
+  startDebounce,
+  setDebounce
+} = tokenSearchSlice.actions;
 export default tokenSearchSlice.reducer;
