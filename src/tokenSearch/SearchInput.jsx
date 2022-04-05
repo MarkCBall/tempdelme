@@ -53,30 +53,21 @@ const HideOnSmallScreen = styled.img`
 const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
   const dispatch = useDispatch();
   const { searchText, networkMap, exchangeMap, searchDebounce } = useSelector((state) => state);
-  // const isSelecting = useSelector((state) => state?.isSelecting);
-  // const isLoading = useSelector((state) => state.isLoading);
-  // const fetchError = useSelector((state) => state?.fetchError);
-  // const selectedPair = useSelector((state) => state?.selectedPair);
 
 
   // Updates the datasets of the results.
   useEffect(
     () => {
-      dispatch(
-        setDebounce(
-          setTimeout(
-            () => {
-              // Ensure that the search text fulfills the minimum lenght requirement.
-              if (searchText.length < inputLengthMinimum) return;
+      dispatch(setDebounce(setTimeout(
+        () => {
+          // Ensure that the search text fulfills the minimum lenght requirement.
+          if (searchText.length < inputLengthMinimum) return;
 
-              dispatch(searchTokenPairs(searchText));
-            },
-            debounceDelay - (new Date().getTime() - searchDebounce)
-          )
-        )
-      );
-    },
-    [dispatch, searchText, networkMap, exchangeMap, inputLengthMinimum, searchDebounce, debounceDelay]
+          dispatch(searchTokenPairs(searchText));
+        },
+        debounceDelay - (new Date().getTime() - searchDebounce)
+      )));
+    }, [dispatch, searchText, networkMap, exchangeMap, inputLengthMinimum, searchDebounce, debounceDelay]
   );
 
 
@@ -101,6 +92,10 @@ const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
 };
 export default SearchInput;
 
+  // const isSelecting = useSelector((state) => state?.isSelecting);
+  // const isLoading = useSelector((state) => state.isLoading);
+  // const fetchError = useSelector((state) => state?.fetchError);
+  // const selectedPair = useSelector((state) => state?.selectedPair);
 
   // const selectedPairText = selectedPair && combinePairText(selectedPair);
 

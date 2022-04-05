@@ -1,7 +1,7 @@
 import React from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { omitBy } from "lodash"
-import { setNetworkMap, setNetworkMapAll, setExchangeMapAll } from "../redux/tokenSearchSlice"
+import { setNetworkMap, setNetworkMapAll, setExchangeMapAll, startDebounce } from "../redux/tokenSearchSlice"
 import { networkNames } from "./helpers/config";
 import { Chip } from "../Components/Chip";
 
@@ -20,6 +20,7 @@ export const FilterNetworkAll = () => {
     checked={networkAll}
     onChange={
       e => {
+        dispatch(startDebounce());
         dispatch(setNetworkMapAll({ networkNames: networkNames, networkAll: networkAll }));
         dispatch(setExchangeMapAll({ exchangeNames: exchangeNamesActive, exchangeAll: false }));
       }
@@ -41,7 +42,10 @@ export const FilterNetworkSelectors = () => {
       name={networkName}
       label={networkName}
       checked={networkMap[networkName] || false}
-      onChange={e => dispatch(setNetworkMap({ networkName, checked: e.target.checked }))}
+      onChange={e => {
+        dispatch(startDebounce());
+        dispatch(setNetworkMap({ networkName, checked: e.target.checked }));
+      }}
     />;
   };
 

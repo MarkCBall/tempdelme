@@ -77,6 +77,7 @@ export const searchTokenPairs = createAsyncThunk(
       let processedNetworks;
       let processedExchanges;
       const pairSearchTimestamp = new Date().getTime();
+      console.log('Search sent');
 
 
       // Dispatches "setPairSearchTimestamp".
@@ -108,7 +109,7 @@ export const searchTokenPairs = createAsyncThunk(
       const data = await retry(() => searchTokensAsync(searchString, processedNetworks, processedExchanges), { retries: 1 });
 
       // console.log("data", data);
-      console.log("data", data.length);
+      console.log(data.length + ' results', (new Date().getTime() - pairSearchTimestamp) + 'ms');
       return { data, pairSearchTimestamp };
     }
     catch (e) {
@@ -178,7 +179,9 @@ export const tokenSearchSlice = createSlice({
       state.searchText = action.payload;
     },
     setDebounce: (state, action) => {
-      clearTimeout(state.searchDebounceAction );
+      console.log('Debounced');
+      clearTimeout(state.searchDebounceAction);
+      state.isLoading = true;
       state.searchDebounceAction = action.payload;
     },
     startDebounce: (state) => {
