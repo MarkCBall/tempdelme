@@ -85,37 +85,3 @@ const SearchInput = () => {
   );
 };
 export default SearchInput;
-
-
-  // const selectedPairText = selectedPair && combinePairText(selectedPair);
-
-  // const onClick = () => dispatch(startSelecting());
-  // const onKeyDown = (e) => e.code === 'Escape' && dispatch(stopSelecting());
-
-  // //todo throw to a global error boundary
-  // if (fetchError) {
-  //   return (
-  //     <PairField>
-  //       <StyledInput
-  //         autocomplete={'off'}
-  //         style={{ color: 'red' }}
-  //         value={'Something went wrong..'}
-  //         onChange={() => {}}
-  //       />
-  //     </PairField>
-  //   );
-  // }
-
-  // let value;
-  // if (isSelecting) {
-  //   value = searchText;
-  // } else {
-  //   value = selectedPairText || 'Select a token pair..';
-  // }
-// const combinePairText = (pair) => {
-//   if (pair.token0?.symbol && pair.token1?.symbol && pair.id) {
-//     const miniAddress = pair.id.slice(0, 8) + '...' + pair.id.slice(-8);
-//     return pair.token0?.symbol + '/' + pair.token1?.symbol + '/' + miniAddress;
-//   }
-//   return '';
-// };

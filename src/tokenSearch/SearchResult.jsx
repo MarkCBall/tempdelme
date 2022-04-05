@@ -1,9 +1,12 @@
 import React from 'react';
+import tw, { css, theme } from 'twin.macro';
+import 'styled-components/macro'
+
 import { useSelector } from 'react-redux';
 import { AutoSizer, List } from 'react-virtualized';
 import styled from 'styled-components';
 
-import SearchResultRow from './SearchResultRow';
+import TokenPairDetail from './TokenPairDetail';
 
 const NilFoundContainer = styled.div`
   width: 50%;
@@ -23,7 +26,7 @@ const NilFoundContainer = styled.div`
   justify-content: center;
 `;
 
-const SearchDropdown = (props) => {
+const SearchResult = (props) => {
   const {suggestions, searchText} = useSelector(
     (state) => state
   );
@@ -38,20 +41,20 @@ const SearchDropdown = (props) => {
   if (!!searchText && !filteredSuggestions.length) {
     return <NilFoundContainer>No pairs found...</NilFoundContainer>;
   }
+  
 
   return (
-    <div style={{ display: 'flex', height: '240px', marginTop: '20px' }}>
-      <div style={{ flex: '1 1 auto' }}>
+    <div tw="h-60 overflow-visible pl-4">      
         <AutoSizer>
           {({ height, width }) => {
             return (
               <List
-                height={height}
+                height={400}
                 overscanRowCount={3}
                 rowCount={filteredSuggestions.length}
                 rowHeight={40}
                 rowRenderer={(props) => (
-                  <SearchResultRow
+                  <TokenPairDetail
                     suggestions={filteredSuggestions}
                     {...props}
                   />
@@ -61,8 +64,7 @@ const SearchDropdown = (props) => {
             );
           }}
         </AutoSizer>
-      </div>
-    </div>
+      </div>    
   );
 };
-export default SearchDropdown;
+export default SearchResult;

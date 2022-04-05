@@ -1,4 +1,6 @@
 import React from "react"
+import tw, { css, styled, theme } from 'twin.macro';
+import 'styled-components/macro'
 import { useSelector } from 'react-redux';
 import {
   Accordion,
@@ -12,24 +14,31 @@ import { FilterExchangeAll, FilterExchangeSelectors } from "./SearchFiltersExcha
 
 
 export const SearchFilters = () => {
-  const { isSelecting, networkMap } = useSelector((state) => state);
+  const { networkMap, exchangeMap } = useSelector((state) => state);
   const exchangesActive = Object.values(networkMap).filter(b => b).length !== 0;
 
-
+  const networkCount = Object.values(networkMap).filter(b=>b).length
+  const exchangeCount = Object.values(exchangeMap).filter(b=>b).length
+  
   // RENDERING.
   return (
     <Accordion allowZeroExpanded>
       <AccordionItem>
         <AccordionItemHeading>
           <AccordionItemButton >
-            Filter Networks: search
+            <div tw="p-4 flex">
+              <div tw="font-bold">Filter Networks:</div>  &nbsp; Searching {networkCount} networks and {exchangeCount} exchanges
+            </div>
           </AccordionItemButton>
         </AccordionItemHeading>
         <AccordionItemPanel>
-          <FilterNetworkAll />
-          <FilterNetworkSelectors />
+          <div tw="flex justify-center items-center m-2">
+            <FilterNetworkAll />
+            <FilterNetworkSelectors />
+          </div>
         </AccordionItemPanel>
-        <AccordionItemPanel>
+        <AccordionItemPanel>          
+          <div tw="flex flex-wrap justify-center m-2">
           {
             exchangesActive &&
             <FilterExchangeAll />
@@ -37,7 +46,8 @@ export const SearchFilters = () => {
           {
             exchangesActive &&
             <FilterExchangeSelectors />
-          }
+          }    
+          </div>      
         </AccordionItemPanel>
       </AccordionItem>
     </Accordion>

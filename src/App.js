@@ -3,17 +3,13 @@ import './App.css';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import TokenSearch from "./tokenSearch";
+import 'styled-components/macro'
 
 function App() {
   return (
-    <div className="App">
-      <Provider store={store}>
-      <br/><br/><br/><br/><br/><br/>
-      <br/><br/>
-      <div style={{width:"500px", margin:"auto", border:"solid"}}>
+    <div tw="container mx-auto m-4">
+      <Provider store={store}>      
         <TokenSearch />
-        {/*  <iframe loading={"lazy"} src={"http://localhost:3000/cookieFramed.html"} height={500}/>*/}
-      </div>
       </Provider>
     </div>
   );
