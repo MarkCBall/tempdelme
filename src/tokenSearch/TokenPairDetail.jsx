@@ -1,9 +1,8 @@
 
 import React from "react"
-import tw, { css, styled, theme } from 'twin.macro';
+import 'twin.macro';
 import 'styled-components/macro'
-
-import { useSelector, useDispatch } from 'react-redux';
+ 
 import {
   Accordion,
   AccordionItem,

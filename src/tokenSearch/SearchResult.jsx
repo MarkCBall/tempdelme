@@ -3,9 +3,7 @@ import tw, { css, theme } from 'twin.macro';
 import 'styled-components/macro'
 
 import { useSelector } from 'react-redux';
-import { AutoSizer, List } from 'react-virtualized';
 import styled from 'styled-components';
-
 import TokenPairDetail from './TokenPairDetail';
 
 const NilFoundContainer = styled.div`
@@ -40,31 +38,19 @@ const SearchResult = (props) => {
 
   if (!!searchText && !filteredSuggestions.length) {
     return <NilFoundContainer>No pairs found...</NilFoundContainer>;
-  }
-  
+  }   
 
   return (
-    <div tw="h-60 overflow-visible pl-4">      
-        <AutoSizer>
-          {({ height, width }) => {
-            return (
-              <List
-                height={400}
-                overscanRowCount={3}
-                rowCount={filteredSuggestions.length}
-                rowHeight={40}
-                rowRenderer={(props) => (
-                  <TokenPairDetail
-                    suggestions={filteredSuggestions}
-                    {...props}
-                  />
-                )}
-                width={width}
-              />
-            );
-          }}
-        </AutoSizer>
-      </div>    
+    <div tw="h-60 overflow-y-auto pl-4 border-solid">    
+      {
+        filteredSuggestions.map((suggestions, index) => 
+        <TokenPairDetail
+          suggestions={filteredSuggestions}
+          index={index}
+        />
+        )
+      }  
+    </div>    
   );
 };
 export default SearchResult;

@@ -7,7 +7,7 @@ import { romePairsClient } from './graphqlClients';
 const getRomeSearchTokenQuery = (networks) => {
   let network;
   let pair_search = ``;
-  const networkDatasetLength = Math.round(process.env.REACT_APP_SEARCH_ASYNC_DATASET_LENGTH_MAXIMUM / networks.length);
+  const networkDatasetLength = 200 //Math.round(process.env.REACT_APP_SEARCH_ASYNC_DATASET_LENGTH_MAXIMUM / networks.length);
 
 
   // Looping through all networks.
@@ -16,7 +16,7 @@ const getRomeSearchTokenQuery = (networks) => {
       ${network}:
         ${network}_pair_search(
           where:{
-            concat_ws:{_ilike:$searchText}, 
+            concat_ws:{_ilike:$searchText},             
             exchange:{_in:$exchanges}
           }, 
           limit:${networkDatasetLength}, 
@@ -69,10 +69,13 @@ const searchTokenAsync_searchString = searchString => {
 // Function that creates the actual async token.
 export const searchTokensAsync = async (searchString, searchNetworks, searchExchanges) => {//, config = { nilVolumeOkay:false }) => {
   let res;
+  const queries = searchString.split(' ')
+  
   const searchText = searchTokenAsync_searchString(searchString);
+  
   const parameters = searchTokenAsync_Parameters(searchText, searchExchanges);
   const query = getRomeSearchTokenQuery(searchNetworks);
-
+  console.log('query: ', query)
   
   // IMPORTANT!!!
   // IMPORTANT!!!

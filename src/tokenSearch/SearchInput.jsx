@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText } from '../redux/tokenSearchSlice';
 import magnifyingGlass from './icon-search.svg';
-
+import debounce from 'lodash.debounce';
 
 const PairField = styled.div`
   display: block;
@@ -52,29 +52,32 @@ const HideOnSmallScreen = styled.img`
 
 const SearchInput = () => {
   const dispatch = useDispatch();
-  const { searchText, networkMap, exchangeMap } = useSelector((state) => state);
-  const isSelecting = useSelector((state) => state?.isSelecting);
-  const isLoading = useSelector((state) => state.isLoading);
-  const fetchError = useSelector((state) => state?.fetchError);
-  const selectedPair = useSelector((state) => state?.selectedPair);
-
-
-  // Updates the datasets of the results.
+  const { searchText, networkMap, exchangeMap } = useSelector((state) => state); 
+  
+  // Updates the datasets of the results. 
   useEffect(() => {
     // Ensure that the search text fulfills the minimum lenght requirement.
     if (searchText.length >= process.env.REACT_APP_SEARCH_INPUT_LENGTH_MINIMUM) {
       dispatch(searchTokenPairs(searchText));
     }
-  }, [dispatch, searchText, networkMap, exchangeMap]);
-
+  }, [dispatch, networkMap, exchangeMap, searchText]); 
   
+
+  const onChangeFilter = (event) => {    
+    const value = event.target.value    
+    dispatch(setSearchText(value))
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceChangeHandler = useCallback( debounce(onChangeFilter, 350), [searchText])
+    
   // RENDERING.
   return (
     <PairField onClick={() => dispatch(startSelecting())}>
       <StyledInput
         placeholder={'Select a token pair'}
         autocomplete={'off'}
-        onChange={e => dispatch(setSearchText(e.target.value))}
+        onChange={debounceChangeHandler}
       />
       <HideOnSmallScreen
         alt={''}
