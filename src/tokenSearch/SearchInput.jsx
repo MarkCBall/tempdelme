@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText, startDebounce, setDebounce } from '../redux/tokenSearchSlice';
+import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText, setSearchToken, setSearchTextValid, startDebounce, stopDebounce } from '../redux/tokenSearchSlice';
 import magnifyingGlass from './icon-search.svg';
 
 
@@ -52,21 +52,85 @@ const HideOnSmallScreen = styled.img`
 
 const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
   const dispatch = useDispatch();
-  const { searchText, networkMap, exchangeMap, searchDebounce } = useSelector((state) => state);
+  const { searchText, networkMap, exchangeMap, searchDebounce, searchToken } = useSelector((state) => state);
+
+
+  // Function that validates if the user is searching for a token and changes the search string accordingly.
+  // We are also adding a value to say if the token search was enabled or not, that way if the user removes characters from the string outside of the threshold,
+  // we will revert to a non-token search.
+  //
+  // IMPORTANT: If the user is searching for a string, that is NOT a token but validates as one, the search WILL only be looking for a token.
+  //
+  const searchTokenValidation = input => {
+    // We want to tell the user whats going on by updating the value on the UI.
+    // The user has to know that we will be looking only for tokens that start with the said string now.
+    let value = input.value;
+    let valueTokenLead = value.substr(0, 2).toLowerCase() === '0x';
+    let valueTokenLike = new RegExp(/^[0-9a-f]+$/i).test(value.substr(valueTokenLead ? 2 : 0));
+
+
+    // Checks that 'valueTokenLead' is false and that the value is token like.
+    if (!valueTokenLead && valueTokenLike && value.length >= 5) {
+      // Add the leading '0x' to the value.
+      value = '0x' + value;
+
+      // User is looking for a token.
+      dispatch(setSearchToken(true));
+    }
+    else
+      // Checks if the search is looking for a token.
+      if (searchToken)
+        // Checks that the value lead is token like.
+        if (valueTokenLead) {
+          // Checks if the user has deleted characters from the search threshold for token detection.
+          // We are looking for a lenght smaller than 7, since we have to take into account the leading '0x'.
+          if (value.length < 7) {
+            // Removes the leading '0x' from the value.
+            value = value.substr(2);
+
+            // User is NOT looking for a token.
+            dispatch(setSearchToken(false));
+          }
+          else
+            // We are checking if the value is token like; since the user may have added non-hex characters to the search string.
+            if (!valueTokenLike) {
+              // Removes the leading '0x' from the value.
+              value = value.substr(2);
+
+              // User is NOT looking for a token.
+              dispatch(setSearchToken(false));
+            }
+        }
+        // This should not happen.
+        // Something went wrong, not sure how this case can happen, but we are turning off the token search.
+        else
+          // User is NOT looking for a token.
+          dispatch(setSearchToken(false));
+
+    // We update the input value.
+    input.value = value;
+
+
+    // Returning.
+    return value;
+  };
 
 
   // Updates the datasets of the results.
   useEffect(
     () => {
-      dispatch(setDebounce(setTimeout(
-        () => {
-          // Ensure that the search text fulfills the minimum lenght requirement.
-          if (searchText.length < inputLengthMinimum) return;
+      dispatch(startDebounce(
+        setTimeout(
+          () => {
+            // Ensure that the search text fulfills the minimum lenght requirement.
+            if (searchText.length < inputLengthMinimum) return dispatch(setSearchTextValid(false));
 
-          dispatch(searchTokenPairs(searchText));
-        },
-        debounceDelay - (new Date().getTime() - searchDebounce)
-      )));
+            dispatch(setSearchTextValid(true));
+            dispatch(searchTokenPairs(searchText));
+          },
+          debounceDelay
+        )
+      ));
     }, [dispatch, searchText, networkMap, exchangeMap, inputLengthMinimum, searchDebounce, debounceDelay]
   );
 
@@ -79,7 +143,7 @@ const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
         autocomplete={'off'}
         onChange={e => {
           dispatch(startDebounce());
-          dispatch(setSearchText(e.target.value));
+          dispatch(setSearchText(searchTokenValidation(e.target)));
         }}
       />
       <HideOnSmallScreen
@@ -91,41 +155,3 @@ const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
   );
 };
 export default SearchInput;
-
-  // const isSelecting = useSelector((state) => state?.isSelecting);
-  // const isLoading = useSelector((state) => state.isLoading);
-  // const fetchError = useSelector((state) => state?.fetchError);
-  // const selectedPair = useSelector((state) => state?.selectedPair);
-
-  // const selectedPairText = selectedPair && combinePairText(selectedPair);
-
-  // const onClick = () => dispatch(startSelecting());
-  // const onKeyDown = (e) => e.code === 'Escape' && dispatch(stopSelecting());
-
-  // //todo throw to a global error boundary
-  // if (fetchError) {
-  //   return (
-  //     <PairField>
-  //       <StyledInput
-  //         autocomplete={'off'}
-  //         style={{ color: 'red' }}
-  //         value={'Something went wrong..'}
-  //         onChange={() => {}}
-  //       />
-  //     </PairField>
-  //   );
-  // }
-
-  // let value;
-  // if (isSelecting) {
-  //   value = searchText;
-  // } else {
-  //   value = selectedPairText || 'Select a token pair..';
-  // }
-// const combinePairText = (pair) => {
-//   if (pair.token0?.symbol && pair.token1?.symbol && pair.id) {
-//     const miniAddress = pair.id.slice(0, 8) + '...' + pair.id.slice(-8);
-//     return pair.token0?.symbol + '/' + pair.token1?.symbol + '/' + miniAddress;
-//   }
-//   return '';
-// };

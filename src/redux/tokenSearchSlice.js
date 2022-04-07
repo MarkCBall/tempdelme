@@ -178,14 +178,20 @@ export const tokenSearchSlice = createSlice({
     setSearchText: (state, action) => {
       state.searchText = action.payload;
     },
-    setDebounce: (state, action) => {
-      console.log('Debounced');
+    setSearchTextValid: (state, action) => {
+      state.searchTextValid = action.payload;
+    },
+    setSearchToken: (state, action) => {
+      state.searchToken = action.payload;
+    },
+    startDebounce: (state, action) => {
       clearTimeout(state.searchDebounceAction);
-      state.isLoading = true;
+      state.isLoading = true;// Got to tell the user what's going on and that there will be a delay.
       state.searchDebounceAction = action.payload;
     },
-    startDebounce: (state) => {
-      state.searchDebounce = new Date().getTime();
+    stopDebounce: (state) => {
+      clearTimeout(state.searchDebounceAction);
+      state.isLoading = false;
     },
     startSelecting: (state) => {
       state.isSelecting = true;
@@ -216,7 +222,6 @@ export const tokenSearchSlice = createSlice({
           delete state.exchangeMap[exchangeName]
         }
       };
-      // Object.keys(state.exchangeMap).map(key => delete state.exchangeMap[key]);
     },
     setNetworkMap: (state, action) => {
       // Setting the payload network name to the payload value.
@@ -244,6 +249,8 @@ export const tokenSearchSlice = createSlice({
 
 export const {
   setSearchText,
+  setSearchTextValid,
+  setSearchToken,
   startSelecting,
   stopSelecting,
   toggleSelecting,
@@ -252,6 +259,6 @@ export const {
   setNetworkMap,
   setNetworkMapAll,
   startDebounce,
-  setDebounce
+  stopDebounce
 } = tokenSearchSlice.actions;
 export default tokenSearchSlice.reducer;
