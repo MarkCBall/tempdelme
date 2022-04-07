@@ -1,5 +1,5 @@
 import React from 'react';
-import tw, { css, theme } from 'twin.macro';
+import 'twin.macro';
 import 'styled-components/macro'
 
 import { useSelector } from 'react-redux';
