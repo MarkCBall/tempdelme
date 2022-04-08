@@ -1,8 +1,10 @@
 
 import './App.css';
+import tw from 'twin.macro';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import TokenSearch from "./tokenSearch";
+
 import 'styled-components/macro'
 
 function App() {
@@ -18,16 +20,33 @@ function App() {
     customSearchFilter: {
       title: "You can filter",
       description: (c1, c2) => {
-        return `No~~~~~ ${c1} networks and ${c2} exchanges`
+        return `Awesome! ${c1} networks and ${c2} exchanges`
+      },
+      wrapperStyles: {
+
       },
       headerStyles: {
-        hoverColor: "yellow"
+        hoverColor: "yellow",
+        margin: "0"
+      },
+      networkStyles: {
+        justifyContent: "right",
+        alignItems: "bottom",
+        margin: "12px",
+        
+      },
+
+      exchangeStyles: {
+        justifyContent: "left",
+        alignItems: "top",
+        margin: "10px",
+         
       }
     }
   }
 
   return (
-    <div tw="container mx-auto m-4">
+    <div tw="container mx-auto w-2/3 content-center mt-10">
       <Provider store={store}>      
         <TokenSearch 
           customSearchInput={renderProps.customSearchInput}

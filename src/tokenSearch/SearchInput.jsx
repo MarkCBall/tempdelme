@@ -7,7 +7,7 @@ import debounce from 'lodash.debounce';
 import TokenSearchContext from '../Context/TokenSearch';
 
 const StyledInput = styled.input`
-  width: ${ props => props?.styles?.width || "100%" };
+  width: ${ props => props?.styles?.width || "-webkit-fill-available" };
   border: ${ props => props?.styles?.border || "none" }; 
   background-color: inherit;
   color: ${ props => props?.styles?.color || "#FFF" };
@@ -18,7 +18,7 @@ const StyledInput = styled.input`
   border-color: ${ props => props?.styles?.borderColor || "#067c82" };  
   border-style: ${ props => props?.styles?.borderStyle || "solid" };  
   border-width: ${ props => props?.styles?.borderWidth || "1px" };  
-  border-radius: ${ props => props?.styles?.borderRadius || "30px" };  
+  border-radius: ${ props => props?.styles?.borderRadius || "0" };  
   background: ${ props => props?.styles?.background || "#08333c" };   
   padding: ${ props => props?.styles?.padding || "11px 15px" };    
   font-size: ${ props => props?.styles?.fontSize || "15px" };      
@@ -36,7 +36,6 @@ const HideOnSmallScreen = styled.img`
     display: none;
   }
 `;
-
 
 const SearchInput = () => {
   const dispatch = useDispatch();

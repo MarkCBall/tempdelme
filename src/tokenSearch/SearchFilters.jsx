@@ -14,11 +14,39 @@ import { FilterExchangeAll, FilterExchangeSelectors } from "./SearchFiltersExcha
 import TokenSearchContext from '../Context/TokenSearch';
 
 const FilterWrapper = styled.div`  
-  .accordion__button[aria-expanded='true']::first::after,
-  .accordion__button[aria-selected='true']::first::after {
+  .accordion__button {
+    position: relative;
+  }
+
+  .accordion__button:first-child:after {
+    display: block;    
+    content: '';
+    height: ${ props => props?.styles?.toggleHeight || "10px" };
+    width: ${ props => props?.styles?.toggleWidth || "10px" };
+    margin-right: ${ props => props?.styles?.toggleMarginRight || "25px" };
+    position: absolute;
+    top: ${ props => props?.styles?.toggleMarginRight || "20px" };
+    right: 0;
+    border-bottom: ${ props => props?.styles?.toggleBorderBottom || "2px solid currentColor" }; 
+    border-right: ${ props => props?.styles?.toggleBorderRight || "2px solid currentColor" }; 
+    transform: rotate(-45deg);
+  }
+
+  .accordion__button[aria-expanded='true']:first-child:after,
+  .accordion__button[aria-selected='true']:first-child:after {
     transform: rotate(45deg);
   }
-`
+
+  .accordion__panel {
+    border: ${ props => props?.styles?.contentBorder || "0" }; 
+    border-top-style: ${ props => props?.styles?.contentBorderTop || "none" }; 
+    border-right-style: ${ props => props?.styles?.contentBorderRight || "none" }; 
+    border-bottom-style: ${ props => props?.styles?.contentBorderBottom || "none" }; 
+    border-left-style: ${ props => props?.styles?.contentBorderLeft || "none" }; 
+    border-radius: ${ props => props?.styles?.borderRadius || "0" }; 
+    margin:  ${ props => props?.styles?.margin || "0 10px" };       
+  }
+`;
 
 const StyledFilterHeader = styled.div`  
   display: ${ props => props?.styles?.display || "inline" };
@@ -31,23 +59,21 @@ const StyledFilterHeader = styled.div`
   padding: ${ props => props?.styles?.padding || "18px" };   
   text-align: ${ props => props?.styles?.textAlign || "left" };     
   margin: ${ props => props?.styles?.margin || "5px" };     
-  
+  border-radius: ${ props => props?.styles?.borderRadius || "0" };     
   &:hover {
     background-color: ${ props => props?.styles?.hoverColor || "#ddd" };
   }
-
-  &:after {
-    display: block;    
-    content: '';
-    float: right;
-    height: 10px;
-    width: 10px;
-    margin-right: 12px;
-    border-bottom: 2px solid currentColor;
-    border-right: 2px solid currentColor;
-    transform: rotate(-45deg);
-  }
 `; 
+
+const StyledFilterContent = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: ${ props => props?.styles?.justifyContent || "center" };
+  align-items: ${ props => props?.styles?.alignItems || "center" };  
+  padding:  ${ props => props?.styles?.padding || "5px 10px" };       
+  background-color: ${ props => props?.styles?.backgroundColor || "#ddd" };
+  border-radius: ${ props => props?.styles?.borderRadius || "0" };     
+`;
 
 export const SearchFilters = () => {
   const renderProps = useContext(TokenSearchContext);  
@@ -64,7 +90,7 @@ export const SearchFilters = () => {
    
   // RENDERING.
   return (
-    <FilterWrapper>
+    <FilterWrapper styles={customSearchFilter?.wrapperStyles}>
       <Accordion allowZeroExpanded>
         <AccordionItem>
           <AccordionItemHeading>
@@ -75,13 +101,13 @@ export const SearchFilters = () => {
             </AccordionItemButton>
           </AccordionItemHeading>
           <AccordionItemPanel>
-            <div tw="flex justify-center items-center m-2">
+            <StyledFilterContent styles={customSearchFilter?.networkStyles}>
               <FilterNetworkAll />
               <FilterNetworkSelectors />
-            </div>
+            </StyledFilterContent>            
           </AccordionItemPanel>
-          <AccordionItemPanel>          
-            <div tw="flex flex-wrap justify-center m-2">
+          <AccordionItemPanel>
+            <StyledFilterContent styles={customSearchFilter?.exchangeStyles}>
             {
               exchangesActive &&
               <FilterExchangeAll />
@@ -90,7 +116,7 @@ export const SearchFilters = () => {
               exchangesActive &&
               <FilterExchangeSelectors />
             }    
-            </div>      
+            </StyledFilterContent>            
           </AccordionItemPanel>
         </AccordionItem>
       </Accordion>
