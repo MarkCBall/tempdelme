@@ -122,9 +122,6 @@ const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
       dispatch(startDebounce(
         setTimeout(
           () => {
-            // Ensure that the search text fulfills the minimum lenght requirement.
-            if (searchText.length < inputLengthMinimum) return dispatch(setSearchTextValid(false));
-
             dispatch(setSearchTextValid(true));
             dispatch(searchTokenPairs(searchText));
           },

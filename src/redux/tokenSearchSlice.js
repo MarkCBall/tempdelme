@@ -185,12 +185,12 @@ export const tokenSearchSlice = createSlice({
       state.searchToken = action.payload;
     },
     startDebounce: (state, action) => {
-      clearTimeout(state.searchDebounceAction);
+      clearTimeout(state.searchDebounce);
       state.isLoading = true;// Got to tell the user what's going on and that there will be a delay.
-      state.searchDebounceAction = action.payload;
+      state.searchDebounce = action.payload;
     },
     stopDebounce: (state) => {
-      clearTimeout(state.searchDebounceAction);
+      clearTimeout(state.searchDebounce);
       state.isLoading = false;
     },
     startSelecting: (state) => {
