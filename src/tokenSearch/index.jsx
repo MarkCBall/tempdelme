@@ -6,8 +6,10 @@ import { stopSelecting } from '../redux/tokenSearchSlice';
 import SearchInput from "./SearchInput";
 import SearchResult from "./SearchResult";
 import SearchFilters from "./SearchFilters";
+import TokenSearchContext from '../Context/TokenSearch'
 
-export const TokenSearch = () => {
+export const TokenSearch = (renderProps) => {
+  
   const dispatch = useDispatch();
   const { isSelecting, isLoading } = useSelector((state) => state);
   const searchRef = useRef();
@@ -21,11 +23,13 @@ export const TokenSearch = () => {
   }, [dispatch]);
 
   return (
-    <div tw="m-10" ref={searchRef}>
-      <SearchInput />
-      <SearchFilters />      
-      {isSelecting && <SearchResult loading={isLoading} />}
-    </div>
+    <TokenSearchContext.Provider value={renderProps}>
+      <div tw="m-10" ref={searchRef}>
+        <SearchInput />
+        <SearchFilters />      
+        {isSelecting && <SearchResult loading={isLoading} />}
+      </div>
+    </TokenSearchContext.Provider>
   );
 };
 
