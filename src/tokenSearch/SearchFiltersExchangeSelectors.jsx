@@ -3,8 +3,7 @@ import { omitBy } from "lodash"
 import { useDispatch, useSelector } from 'react-redux';
 import { setExchangeMap, setExchangeMapAll } from "../redux/tokenSearchSlice"
 import { exchangeNames } from "./helpers/config";
-import { Chip } from "../Components/Chip";
-
+import { Chip } from "./Chip";
 
 export const FilterExchangeAll = () => {
   const dispatch = useDispatch();

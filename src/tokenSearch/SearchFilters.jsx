@@ -86,8 +86,8 @@ export const SearchFilters = () => {
   const exchangeCount = Object.values(exchangeMap).filter(b=>b).length
   
   const title = customSearchFilter?.title || 'Filter Networks'
-  const description = customSearchFilter?.description(networkCount, exchangeCount) || `Searching {networkCount} networks and {exchangeCount} exchanges`
-   
+  const description = networkCount === 0 && exchangeCount === 0 ? 'Searching all networks and exchanges' : customSearchFilter?.description(networkCount, exchangeCount) || `Searching {networkCount} networks and {exchangeCount} exchanges`
+     
   // RENDERING.
   return (
     <FilterWrapper styles={customSearchFilter?.wrapperStyles}>
