@@ -21,7 +21,7 @@ export const TokenSearch = () => {
 
   return (
     <div ref={searchRef}>
-      <SearchInput inputLengthMinimum={3} debounceDelay={500} />
+      <SearchInput />
       <SearchFilters />
       {isSelecting && <SearchResult loading={isLoading} />}
     </div>

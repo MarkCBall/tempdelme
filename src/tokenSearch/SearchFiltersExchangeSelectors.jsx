@@ -1,7 +1,7 @@
 import React from "react"
 import { omitBy } from "lodash"
 import { useDispatch, useSelector } from 'react-redux';
-import { setExchangeMap, setExchangeMapAll, startDebounce } from "../redux/tokenSearchSlice"
+import { setExchangeMap, setExchangeMapAll } from "../redux/tokenSearchSlice"
 import { exchangeNames } from "./helpers/config";
 import { Chip } from "../Components/Chip";
 
@@ -18,10 +18,7 @@ export const FilterExchangeAll = () => {
     name={'AllExchanges'}
     label={'All'}
     checked={exchangeAll}
-    onChange={() => {
-      dispatch(startDebounce());
-      dispatch(setExchangeMapAll({ exchangeNames: exchangeNamesActive, exchangeAll: exchangeAll }));
-    }}
+    onChange={() => dispatch(setExchangeMapAll({ exchangeNames: exchangeNamesActive, exchangeAll: exchangeAll, debounceDelay: 1000 }))}
   />;
 };
 
@@ -40,10 +37,7 @@ export const FilterExchangeSelectors = () => {
       name={exchangeName}
       label={exchangeName}
       checked={exchangeMap[exchangeName] || false}
-      onChange={e => {
-        dispatch(startDebounce());
-        dispatch(setExchangeMap({ exchangeName: exchangeName, checked: e.target.checked }));
-      }}
+      onChange={e => dispatch(setExchangeMap({ exchangeName: exchangeName, checked: e.target.checked, debounceDelay: 1000 }))}
     />;
   };
 

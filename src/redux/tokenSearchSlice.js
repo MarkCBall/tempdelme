@@ -72,6 +72,9 @@ const valueCleaner = (networkMap, exchangeMap) => {
 export const searchTokenPairs = createAsyncThunk(
   'token/search',
   async (searchString, thunkAPI) => {
+    // Cancel search is string is empty.
+    if (!searchString) return;
+
     try {
       let { networkMap, exchangeMap } = thunkAPI.getState();
       let processedNetworks;
@@ -175,23 +178,17 @@ export const tokenSearchSlice = createSlice({
   initialState,
   name: 'tokenSearch',
   reducers: {
-    setSearchText: (state, action) => {
-      state.searchText = action.payload;
+    setDebounce: (state, action) => {
+      clearTimeout(state.searchDebouncePayload);
+      state.isLoading = action.payload !== undefined;
+      state.searchDebouncePayload = action.payload;
     },
-    setSearchTextValid: (state, action) => {
-      state.searchTextValid = action.payload;
+    setSearchText: (state, action) => {
+      state.searchDebounceDelay = action.payload.debounceDelay || 1000;
+      state.searchText = action.payload.text;
     },
     setSearchToken: (state, action) => {
       state.searchToken = action.payload;
-    },
-    startDebounce: (state, action) => {
-      clearTimeout(state.searchDebounce);
-      state.isLoading = true;// Got to tell the user what's going on and that there will be a delay.
-      state.searchDebounce = action.payload;
-    },
-    stopDebounce: (state) => {
-      clearTimeout(state.searchDebounce);
-      state.isLoading = false;
     },
     startSelecting: (state) => {
       state.isSelecting = true;
@@ -203,46 +200,40 @@ export const tokenSearchSlice = createSlice({
       state.isSelecting = !state.isSelecting;
     },
     setExchangeMap: (state, action) => {
-      // Setting the payload exchange name to the payload value.
+      state.searchDebounceDelay = action.payload.debounceDelay || 1000;
       state.exchangeMap[action.payload.exchangeName] = action.payload.checked;
     },
     setExchangeMapAll: (state, action) => {
-      let exchangeName;
-
+      state.searchDebounceDelay = action.payload.debounceDelay || 1000;
 
       // Loops through the network names.
-      for (exchangeName of action.payload.exchangeNames) {
+      for (let exchangeName of action.payload.exchangeNames)
         // Validate if "all exchange" is active.
-        if (action.payload.exchangeAll) {
+        if (action.payload.exchangeAll)
           // Sets all networks to true.
           state.exchangeMap[exchangeName] = true;
-        }
-        else {
+
+        else
           // Removes all manual networks.
           delete state.exchangeMap[exchangeName]
-        }
-      };
     },
     setNetworkMap: (state, action) => {
-      // Setting the payload network name to the payload value.
+      state.searchDebounceDelay = action.payload.debounceDelay || 1000;
       state.networkMap[action.payload.networkName] = action.payload.checked;
     },
     setNetworkMapAll: (state, action) => {
-      let networkName;
-
+      state.searchDebounceDelay = action.payload.debounceDelay || 1000;
 
       // Loops through the network names.
-      for (networkName of action.payload.networkNames) {
+      for (let networkName of action.payload.networkNames)
         // Validate if "all network" is active.
-        if (action.payload.networkAll) {
+        if (action.payload.networkAll)
           // Sets all networks to true.
           state.networkMap[networkName] = true;
-        }
-        else {
+
+        else
           // Removes all manual networks.
           delete state.networkMap[networkName]
-        }
-      };
     }
   },
 });
@@ -258,7 +249,6 @@ export const {
   setExchangeMapAll,
   setNetworkMap,
   setNetworkMapAll,
-  startDebounce,
-  stopDebounce
+  setDebounce
 } = tokenSearchSlice.actions;
 export default tokenSearchSlice.reducer;

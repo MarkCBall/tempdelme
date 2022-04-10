@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText, setSearchToken, setSearchTextValid, startDebounce, stopDebounce } from '../redux/tokenSearchSlice';
+import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText, setSearchToken, setDebounce } from '../redux/tokenSearchSlice';
 import magnifyingGlass from './icon-search.svg';
 
 
@@ -50,9 +50,9 @@ const HideOnSmallScreen = styled.img`
 `;
 
 
-const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
+const SearchInput = () => {
   const dispatch = useDispatch();
-  const { searchText, networkMap, exchangeMap, searchDebounce, searchToken } = useSelector((state) => state);
+  const { searchText, networkMap, exchangeMap, searchToken, searchDebounceDelay } = useSelector((state) => state);
 
 
   // Function that validates if the user is searching for a token and changes the search string accordingly.
@@ -107,9 +107,8 @@ const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
           // User is NOT looking for a token.
           dispatch(setSearchToken(false));
 
-    // We update the input value.
-    input.value = value;
-
+    // We update the input value if the string is not empty.
+    if (!value) input.value = value;
 
     // Returning.
     return value;
@@ -118,17 +117,10 @@ const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
 
   // Updates the datasets of the results.
   useEffect(
-    () => {
-      dispatch(startDebounce(
-        setTimeout(
-          () => {
-            dispatch(setSearchTextValid(true));
-            dispatch(searchTokenPairs(searchText));
-          },
-          debounceDelay
-        )
-      ));
-    }, [dispatch, searchText, networkMap, exchangeMap, inputLengthMinimum, searchDebounce, debounceDelay]
+    () => dispatch(setDebounce(
+      setTimeout(() => dispatch(searchTokenPairs(searchText)), searchDebounceDelay)
+    )),
+    [dispatch, searchText, networkMap, exchangeMap, searchDebounceDelay]
   );
 
 
@@ -138,10 +130,7 @@ const SearchInput = ({ inputLengthMinimum, debounceDelay }) => {
       <StyledInput
         placeholder={'Select a token pair'}
         autocomplete={'off'}
-        onChange={e => {
-          dispatch(startDebounce());
-          dispatch(setSearchText(searchTokenValidation(e.target)));
-        }}
+        onChange={e => dispatch(setSearchText({ text: searchTokenValidation(e.target), debounceDelay: 450 }))}
       />
       <HideOnSmallScreen
         alt={''}

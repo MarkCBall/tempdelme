@@ -22,46 +22,22 @@ const NilFoundContainer = styled.div`
   justify-content: center;
 `;
 
-
 const SearchDropdown = (props) => {
-  const { suggestions, searchText, searchTextValid, searchToken } = useSelector(
+  const {suggestions, searchText} = useSelector(
     (state) => state
   );
   const filteredSuggestions = suggestions
     .slice()
     .sort((pair1, pair2) => pair2.volumeUSD - pair1.volumeUSD);
 
-  let message;
-  // Analyzing for a message to the user.
-  const messageLoader = () => {
-    let message;
+  if (props.loading) {
+    return <NilFoundContainer>Loading...</NilFoundContainer>;
+  }
 
+  if (!!searchText && !filteredSuggestions.length) {
+    return <NilFoundContainer>No pairs found...</NilFoundContainer>;
+  }
 
-    // Checks if the text is a valid length for a search.
-    if (!searchTextValid)
-      message = 'Search criteria too short...';
-
-    else
-      // Is the search loading the data?
-      if (props.loading)
-        message = 'Loading...';
-
-      else
-        // Checks if there is a search text and there are results.
-        if (!!searchText && !filteredSuggestions.length)
-          // Was the search looking for a token or not?
-          message = !searchToken ? 'No pairs found...' : 'No token found...';
-
-
-    // Returning.
-    return message;
-  };
-
-
-  // Displaying message.
-  if (message = messageLoader()) return <NilFoundContainer>{message}</NilFoundContainer>;
-
-  // Rendering.
   return (
     <div style={{ display: 'flex', height: '240px', marginTop: '20px' }}>
       <div style={{ flex: '1 1 auto' }}>
