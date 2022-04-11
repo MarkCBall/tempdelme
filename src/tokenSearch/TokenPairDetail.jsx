@@ -50,11 +50,11 @@ const StyledAction = styled.div`
   padding: 10;
 `
 const Action = (props) => {
-  const { component } = props
+  const { component, detail } = props
   const Component = component
   return (
     <StyledAction>
-      <Component />
+      <Component detail={detail}/>
     </StyledAction>
   )
     
@@ -105,7 +105,7 @@ export const TokenPairDetail = (props) => {
               <div><b>{capitalizeFirstLetter(selectedPair.exchange)}</b></div>
               <StyledActionWrapper>
                 {
-                  customActions.map((action) => <Action key={`action-${action.index}`} component={action.component}></Action>)
+                  customActions.map((action) => <Action key={`action-${action.index}`} component={action.component} detail={selectedPair}></Action>)
                 }
               </StyledActionWrapper>
             </div>            

@@ -7,9 +7,10 @@ import TokenSearch from "./tokenSearch";
 
 import 'styled-components/macro'
 
-const exchangeAction = () => {  
+const exchangeAction = (props) => {  
+  const {detail} = props
   const handleClick = () => {
-    console.log('Exchange')
+    console.log('Exchange: ', detail)
   }
   return (
     <div onClick={handleClick}>Exchange</div>
