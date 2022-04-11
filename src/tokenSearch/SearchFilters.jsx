@@ -1,6 +1,5 @@
 import React, { useContext } from "react"
-import tw, { css, styled, theme } from 'twin.macro';
-import 'styled-components/macro'
+import styled from  'styled-components'
 import { useSelector } from 'react-redux';
 import {
   Accordion,
