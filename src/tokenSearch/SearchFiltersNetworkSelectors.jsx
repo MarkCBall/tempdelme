@@ -1,16 +1,16 @@
 import React from "react"
 import { useDispatch, useSelector } from 'react-redux';
-import { omitBy } from "lodash"
 import { setNetworkMap, setNetworkMapAll, setExchangeMapAll } from "../redux/tokenSearchSlice"
 import { networkNames } from "./helpers/config";
 import { Chip } from "../Components/Chip";
+import { filterActiveAll, filterActiveNames } from './helpers/filters.js';
 
 
 export const FilterNetworkAll = () => {
   const dispatch = useDispatch();
   const { exchangeMap, networkMap } = useSelector((state) => state);
-  const networkAll = Object.values(omitBy(networkMap, b => !b)).length === 0;
-  const exchangeNamesActive = Object.keys(omitBy(exchangeMap, b => !b));
+  const networkAll = filterActiveAll(networkMap);
+  const exchangeNamesActive = filterActiveNames(exchangeMap);
 
 
   // RENDERING.
