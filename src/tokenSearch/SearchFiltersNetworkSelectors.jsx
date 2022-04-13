@@ -44,7 +44,6 @@ export const FilterNetworkSelectors = () => {
     />;
   };
 
-
   // RENDERING.
   return networkNames.map(networkName => networkElement(networkName));
 };

@@ -6,24 +6,27 @@ import TokenPairDetail from './TokenPairDetail';
 import TokenSearchContext from '../Context/TokenSearch';
 
 const StyledResult = styled.div`
-  width: ${ props => props?.styles?.width || "auto" };
-  height: ${ props => props?.styles?.height || "300px" };
-  border: ${ props => props?.styles?.border || "1px solid grey" }; 
   background-color: inherit;
-  color: ${ props => props?.styles?.color || "#FFF" };
-  display: ${ props => props?.styles?.display || "block" }; 
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  border-color: ${ props => props?.styles?.borderColor || "#067c82" };  
-  border-style: ${ props => props?.styles?.borderStyle || "solid" };  
-  border-width: ${ props => props?.styles?.borderWidth || "1px" };  
-  border-radius: ${ props => props?.styles?.borderRadius || "0" };  
-  background: ${ props => props?.styles?.background || "#08333c" };   
-  padding: ${ props => props?.styles?.padding || "0" };    
-  font-size: ${ props => props?.styles?.fontSize || "15px" };      
-  font-family: ${ props => props?.styles?.fontFamily || "'Fira Code', monospace" };
   overflow: auto;
+
+  ${({props}) => `
+    width: ${ props?.styles?.width || "auto" };
+    height: ${ props?.styles?.height || "300px" };
+    border: ${ props?.styles?.border || "1px solid grey" };   
+    color: ${ props?.styles?.color || "#FFF" };
+    display: ${ props?.styles?.display || "block" };   
+    border-color: ${ props?.styles?.borderColor || "#067c82" };  
+    border-style: ${ props?.styles?.borderStyle || "solid" };  
+    border-width: ${ props?.styles?.borderWidth || "1px" };  
+    border-radius: ${ props?.styles?.borderRadius || "0" };  
+    background: ${ props?.styles?.background || "#08333c" };   
+    padding: ${ props?.styles?.padding || "0" };    
+    font-size: ${ props?.styles?.fontSize || "15px" };      
+    font-family: ${ props?.styles?.fontFamily || "'Fira Code', monospace" };  
+  `}  
 `;
 
 const StyledLoading = styled.div`
@@ -31,8 +34,10 @@ const StyledLoading = styled.div`
   display: flex;
   justify-content: center;  
   margin: 10px;
-  color: ${ props => props?.styles?.color || "black" };
-  font-size: ${ props => props?.styles?.fontSize || "15px" };      
+  ${({props}) => `
+    color: ${ props?.styles?.color || "black" };
+    font-size: ${ props?.styles?.fontSize || "15px" };      
+  `}    
 `
 const SearchResult = (props) => {
   const renderProps = useContext(TokenSearchContext);  

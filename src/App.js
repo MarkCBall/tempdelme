@@ -38,9 +38,14 @@ function App() {
   const renderProps = {
     customSearchInput: {
       styles: {
-        color: "red",
-        borderColor: "green",
-        background: "blue"
+        input: {
+          color: "red",
+          borderColor: "green",
+          background: "blue"
+        },
+        icon: {
+
+        }
       },
       placeholder: "You can search by token pairs here."
     },
@@ -49,30 +54,31 @@ function App() {
       description: (c1, c2) => {
         return `Awesome! ${c1} networks and ${c2} exchanges`
       },
-      wrapperStyles: {
+      styles: {
+        wrapper: {
 
-      },
-      headerStyles: {
-        hoverColor: "yellow",
-        margin: "0"
-      },
-      networkStyles: {
-        justifyContent: "center",
-        alignItems: "center",
-        margin: "12px",
-        padding: "10px 0 0"         
-      },
-
-      exchangeStyles: {
-        justifyContent: "left",
-        alignItems: "top",
-        margin: "5px 10px",
-        padding: "0 10px 10px"         
+        },
+        header: {
+          hoverColor: "yellow",
+          margin: "0"
+        },
+        network: {
+          justifyContent: "center",
+          alignItems: "center",
+          margin: "12px",
+          padding: "10px 0 0"         
+        },
+        exchange: {
+          justifyContent: "left",
+          alignItems: "top",
+          margin: "5px 10px",
+          padding: "0 10px 10px"         
+        }
       }
     },
     customChip: {
       styles: {
-        checkedBackgroundColor: "red"
+         
       }
     },
     customResult: {

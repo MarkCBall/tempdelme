@@ -24,20 +24,22 @@ const StyledHeader = styled.div`
   display: grid;
   grid-auto-flow: column;
   gap: 10px;
-  padding: ${ props => props?.styles?.padding || "10px" };
-  color: ${ props => props?.styles?.color || "black" };
-  background: ${ props => props?.styles?.background || "green" };
-  '&:hover': {
-
-  }
+  
+  ${({props}) => `
+    padding: ${ props?.styles?.padding || "10px" };
+    color: ${ props?.styles?.color || "black" };
+    background: ${ props?.styles?.background || "green" };
+  `}  
 `
 const StyeldPanel = styled.div`
   display: grid;
   grid-auto-flow: column;
   gap: 10px;
-  padding: ${ props => props?.styles?.padding || "10px" };
-  color: ${ props => props?.styles?.color || "black" };
-  background: ${ props => props?.styles?.background || "white" };  
+  ${({props}) => `
+    padding: ${ props?.styles?.padding || "10px" };
+    color: ${ props?.styles?.color || "black" };
+    background: ${ props?.styles?.background || "white" };  
+  `}    
 `
 
 const StyledActionWrapper = styled.div`
