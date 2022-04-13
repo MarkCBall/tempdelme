@@ -65,12 +65,13 @@ const SearchInput = () => {
     // We want to tell the user whats going on by updating the value on the UI.
     // The user has to know that we will be looking only for tokens that start with the said string now.
     let value = input.value;
-    let valueTokenLead = value.substr(0, 2).toLowerCase() === '0x';
-    let valueTokenLike = new RegExp(/^[0-9a-f]+$/i).test(value.substr(valueTokenLead ? 2 : 0));
+    let leadIsTokenLike = value.substr(0, 2).toLowerCase() === '0x';
+    let valueIsTokenLike = new RegExp(/^[0-9a-f]+$/i).test(value.substr(leadIsTokenLike ? 2 : 0));
+    let valueLength = value.length;
 
 
-    // Checks that 'valueTokenLead' is false and that the value is token like.
-    if (!valueTokenLead && valueTokenLike && value.length >= 5) {
+    // Checks that 'leadIsTokenLike' is false and that the value is token like.
+    if (!leadIsTokenLike && valueIsTokenLike && valueLength >= 5) {
       // Add the leading '0x' to the value.
       value = '0x' + value;
 
@@ -81,10 +82,10 @@ const SearchInput = () => {
       // Checks if the search is looking for a token.
       if (searchToken)
         // Checks that the value lead is token like.
-        if (valueTokenLead) {
+        if (leadIsTokenLike) {
           // Checks if the user has deleted characters from the search threshold for token detection.
           // We are looking for a lenght smaller than 7, since we have to take into account the leading '0x'.
-          if (value.length < 7) {
+          if (valueLength < 7) {
             // Removes the leading '0x' from the value.
             value = value.substr(2);
 
@@ -93,7 +94,7 @@ const SearchInput = () => {
           }
           else
             // We are checking if the value is token like; since the user may have added non-hex characters to the search string.
-            if (!valueTokenLike) {
+            if (!valueIsTokenLike) {
               // Removes the leading '0x' from the value.
               value = value.substr(2);
 
