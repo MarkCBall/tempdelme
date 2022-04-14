@@ -131,6 +131,7 @@ const SearchInput = () => {
       <StyledInput
         placeholder={'Select a token pair'}
         autocomplete={'off'}
+        maxLength="48"
         onChange={e => dispatch(setSearchText({ text: searchTokenValidation(e.target), debounceDelay: 450 }))}
       />
       <HideOnSmallScreen

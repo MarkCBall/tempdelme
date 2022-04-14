@@ -44,4 +44,3 @@ const moonriverPairs = [
 ]
 export const networkExchangePairs = [...BSCPairs,...AvalanchePairs, ...moonbeamPairs, ...moonriverPairs];
 export const networkNames = uniq(networkExchangePairs.map(pair => pair[0]));
-export const tokenRegex = new RegExp(/^[0-9a-f]{5,}/i);
