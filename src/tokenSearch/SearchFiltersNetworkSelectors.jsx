@@ -1,8 +1,8 @@
 import React from "react"
 import { useDispatch, useSelector } from 'react-redux';
 import { setNetworkMap, setNetworkMapAll, setExchangeMapAll } from "../redux/tokenSearchSlice"
-import { networkNames } from "./helpers/config";
 import { Chip } from "../Components/Chip";
+import { networkNames } from "./helpers/config";
 import { filterActiveAll, filterActiveNames } from './helpers/filters.js';
 
 
