@@ -72,8 +72,7 @@ const SearchInput = () => {
   const color  = customSearchInput?.styles?.search?.color ? customSearchInput?.styles?.search?.color : '#FFF'
   const height = customSearchInput?.styles?.search?.height ? customSearchInput?.styles?.search?.height : 14
   const width = customSearchInput?.styles?.search?.width ? customSearchInput?.styles?.search?.width : 14
-
-  console.log(activeColor)
+ 
   // RENDERING.
   return (
     <StyledWrapper onClick={() => dispatch(startSelecting())}>

@@ -85,12 +85,11 @@ export const TokenPairDetail = (props) => {
           <AccordionItemButton>
             <StyledHeader styles={customTokenDetail?.styles?.header}>
               <div>
-                <div>{selectedPair.network.toUpperCase()} - {capitalizeFirstLetter(selectedPair.exchange)} - </div>
+                <div>{selectedPair.network.toUpperCase()} - {capitalizeFirstLetter(selectedPair.exchange)}</div>
                 <div>Volume: {intToWords(selectedPair.volumeUSD)}</div>
               </div>
               <div>
-                {tokenImage(selectedPair.token0)}{selectedPair.token0.name} - 
-                {tokenImage(selectedPair.token1)}{selectedPair.token1.name}
+                {tokenImage(selectedPair.token0)}{selectedPair.token0.name} - {tokenImage(selectedPair.token1)}{selectedPair.token1.name}
               </div>
             </StyledHeader>
           </AccordionItemButton>
