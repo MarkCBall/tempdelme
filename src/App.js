@@ -39,9 +39,7 @@ function App() {
     customSearchInput: {
       styles: {
         input: {
-          color: "red",
-          borderColor: "green",
-          background: "blue"
+         
         },
         icon: {
 
@@ -50,35 +48,31 @@ function App() {
       placeholder: "You can search by token pairs here."
     },
     customSearchFilter: {
-      title: "You can filter",
-      description: (c1, c2) => {
-        return `Awesome! ${c1} networks and ${c2} exchanges`
-      },
+      
+       
       styles: {
         wrapper: {
 
         },
         header: {
-          hoverColor: "yellow",
-          margin: "0"
+        
         },
         network: {
-          justifyContent: "center",
-          alignItems: "center",
-          margin: "12px",
-          padding: "10px 0 0"         
+            
         },
         exchange: {
-          justifyContent: "left",
-          alignItems: "top",
-          margin: "5px 10px",
-          padding: "0 10px 10px"         
+           
         }
       }
     },
     customChip: {
       styles: {
          
+      }
+    },
+    customAllChip: {
+      styles: {
+
       }
     },
     customResult: {
@@ -118,6 +112,8 @@ function App() {
           customTokenDetail={renderProps?.customTokenDetail}
           customLoading={renderProps?.customLoading}
           customActions={customActions}
+          customWrapper={renderProps?.customWrapper}
+          customAllChip={renderProps?.customAllChip}
         />
       </Provider>
     </div>

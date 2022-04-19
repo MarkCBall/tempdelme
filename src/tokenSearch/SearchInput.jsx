@@ -14,16 +14,17 @@ const StyledInput = styled.input`
 
   ${({props}) => `
     width: ${ props?.styles?.width || "-webkit-fill-available" };
+    height: ${ props?.styles?.height || "auto" };
     border: ${ props?.styles?.border || "none" };   
-    color: ${ props?.styles?.color || "#FFF" };
+    color: ${ props?.styles?.color || "#7A808A" };
     display: ${ props?.styles?.display || "block" };   
-    border-color: ${ props?.styles?.borderColor || "#067c82" };  
-    border-style: ${ props?.styles?.borderStyle || "solid" };  
-    border-width: ${ props?.styles?.borderWidth || "1px" };  
-    border-radius: ${ props?.styles?.borderRadius || "0" };  
-    background: ${ props?.styles?.background || "#08333c" };   
-    padding: ${ props?.styles?.padding || "11px 15px" };    
-    font-size: ${ props?.styles?.fontSize || "15px" };      
+    border-color: ${ props?.styles?.borderColor || "#474F5C" };  
+    border-style: ${ props?.styles?.borderStyle || "none" };  
+    border-width: ${ props?.styles?.borderWidth || "0" };  
+    border-radius: ${ props?.styles?.borderRadius || "4px" };  
+    background: ${ props?.styles?.background || "#00070E" };   
+    padding: ${ props?.styles?.padding || "10px 14px" };    
+    font-size: ${ props?.styles?.fontSize || "8px" };      
     font-family: ${ props?.styles?.fontFamily || "'Fira Code', monospace" };
   `}  
 `;
@@ -33,8 +34,8 @@ const StyledSearchIconWrapper = styled.div`
   float: right;
   position: absolute;
   ${({props}) => `
-    right: ${ props?.styles?.right || "15px" };      
-    top: ${ props?.styles?.top || "12px" };        
+    right: ${ props?.styles?.right || "14px" };      
+    top: ${ props?.styles?.top || "6px" };        
   `}    
 `;
 
@@ -66,10 +67,10 @@ const SearchInput = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceChangeHandler = useCallback( debounce(onChangeFilter, 350), [searchText])
   
-  const placeholder = customSearchInput?.placeholder ?  customSearchInput?.placeholder : 'Please input token name or address.'
+  const placeholder = customSearchInput?.placeholder ?  customSearchInput?.placeholder : 'Search pair by symbol, name, contract or token'
 
-  const activeColor = customSearchInput?.styles?.search?.activeColor ? customSearchInput?.styles?.search?.activeColor : '#666699'
-  const color  = customSearchInput?.styles?.search?.color ? customSearchInput?.styles?.search?.color : '#FFF'
+  const activeColor = customSearchInput?.styles?.search?.activeColor ? customSearchInput?.styles?.search?.activeColor : '#FF0000'
+  const color  = customSearchInput?.styles?.search?.color ? customSearchInput?.styles?.search?.color : '#7A808A'
   const height = customSearchInput?.styles?.search?.height ? customSearchInput?.styles?.search?.height : 14
   const width = customSearchInput?.styles?.search?.width ? customSearchInput?.styles?.search?.width : 14
  

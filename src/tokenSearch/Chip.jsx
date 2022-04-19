@@ -1,4 +1,4 @@
-import React, { memo, useContext } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import TokenSearchContext from '../Context/TokenSearch';
 
@@ -16,48 +16,51 @@ const StyledChip = styled.div`
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    ${
-      ({props}) => `
-        font-size: ${ props?.styles?.fontSize || "14px" };  
-        border-radius: ${ props?.styles?.borderRadius || "5px" };  
-        background-color: ${ props?.styles?.backgroundColor || "#FFF" };  
-        border: ${ props?.styles?.border || "solid 2px #7d7d7d" };   
-        padding: ${ props?.styles?.padding || "0.1rem 0.3rem" };   
-        margin: ${ props?.styles?.margin || "5px" };   
-        color: ${ props?.styles?.defaultColor || "black" };   
-        width: ${ props?.styles?.width || "100px" };   
-        height: ${ props?.styles?.height || "auto" };   
-        text-align: ${ props?.styles?.textAlign || "center" }; 
-      `
+    ${({ styles }) => {
+      return  `
+          font-size: ${styles?.fontSize || "8px"};  
+          font-weight: ${styles?.fontWeight || "500"};  
+          border-radius: ${styles?.borderRadius || "4px"};  
+          background-color: ${styles?.backgroundColor || "#474F5C"};  
+          border: ${styles?.border || "solid 2px #474F5C"};   
+          padding: ${styles?.padding || "7px 35px"};   
+          margin: ${styles?.margin || "5px 5px 0"};   
+          color: ${styles?.defaultColor || "#B4BBC7"};   
+          width: ${styles?.width || "50px"};   
+          height: ${styles?.height || "auto"};   
+          text-align: ${styles?.textAlign || "center"}; 
+          text-transform: ${styles?.textTransform || "uppercase"}; 
+        ` 
+      }
     }      
   }
 
   > input:checked + label {
     -webkit-transition: all 500ms ease;
     transition: all 500ms ease;   
-    ${
-      ({props}) => `
-        border-color: ${ props?.styles?.checkedColor || "#666699" };    
-        color: ${ props?.styles?.checkedColor || "white" };   
-        background-color: ${ props?.styles?.checkedBackgroundColor || "gray" };  
+    ${({ styles }) => `
+        border-color: ${styles?.checkedColor || "#666699"};    
+        color: ${styles?.checkedColor || "black"};   
+        background-color: ${styles?.checkedBackgroundColor || "gray"};  
       `
     }     
   }
 `;
 
-
-export const Chip = memo(
-  (props) => {
-    const renderProps = useContext(TokenSearchContext);  
-    const {label, checked, onChange, name, value} = props
-    const { customChip } = renderProps
-    return (
-      <StyledChip styles={customChip?.styles}
-      >
-        <input type="checkbox" id={`${label}-${name}`} onChange={onChange} checked={checked} name={name} value={value} />
-        <label htmlFor={`${label}-${name}`}>{label} </label>
-      </StyledChip>
-    );
-  }
-);
+export const Chip = (props) => {
+  const renderProps = useContext(TokenSearchContext);
+  
+  const { label, checked, onChange, name, value, styles } = props
+  
+  const { customChip } = renderProps
+  const customStyles = styles === undefined ? customChip?.styles : styles
+  
+  return (
+    <StyledChip styles={customStyles} 
+    >
+      <input type="checkbox" id={`${label}-${name}`} onChange={onChange} checked={checked} name={name} value={value} />
+      <label htmlFor={`${label}-${name}`}>{label} </label>
+    </StyledChip>
+  );
+}
 export default Chip;

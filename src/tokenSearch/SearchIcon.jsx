@@ -2,29 +2,28 @@ import React, {  memo } from 'react';
 import styled from 'styled-components';
 
 const StyledSVG = styled.svg`
-  '&:hover': {
-     
+  '&:hover': {     
       ${({ hoverColor}) =>
-        `stroke: ${hoverColor};`}
-     
+        `stroke: ${hoverColor};`}     
   }
 `
 export const SearchIcon = memo(
   ({ active, activeColor, color, height, width }) => (
     <StyledSVG
-      height={height ?? 19.519}
+      height={height ?? 18}
       hoverColor={activeColor}
-      viewBox="0 0 19.519 19.519"
-      width={width ?? 19.519}
+      viewBox="0 0 18 18"
+      width={width ?? 18}
       xmlns="http://www.w3.org/2000/svg"
     >
+      <circle cx="7.4" cy="7.4" r="6.4" stroke={active ? activeColor : color} />
       <path
-        d="M1427.667,779.6l-5.554-5.555a7.774,7.774,0,1,0-1.061,1.06l5.554,5.555a.75.75,0,0,0,1.061-1.06Zm-17.8-10.482a6.258,6.258,0,1,1,6.258,6.257A6.265,6.265,0,0,1,1409.868,769.119Z"
+        d="M7.39995 4.20001C6.97972 4.20001 6.56361 4.28278 6.17536 4.4436C5.78712 4.60441 5.43436 4.84012 5.13721 5.13727C4.84006 5.43442 4.60435 5.78718 4.44354 6.17543C4.28272 6.56367 4.19995 6.97978 4.19995 7.40001"
         data-name="Search icon"
         stroke={active ? activeColor : color}
-        id="Search_icon"
-        transform="translate(-1408.368 -761.362)"
+        id="Search_icon"        
       />
+      <path d="M17 17L13.8 13.8" stroke={active ? activeColor : color} />
     </StyledSVG>
   )
 );
