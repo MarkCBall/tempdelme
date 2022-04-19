@@ -120,6 +120,7 @@ const StyledFilterWrapper = styled.div`
 `
 const StyledCount = styled.div`
   color: white;
+  font-weight: 400;  
 `
 const SearchDescription = (props) => {  
   const { networkCount, exchangeCount, type } = props;
@@ -129,11 +130,11 @@ const SearchDescription = (props) => {
     desc = 'Searching all networks and exchanges'
   } else {
     if (type === 'network')
-      desc = `Searching <StyledCount>${networkCount}</StyledCount> networks within <StyledCount>${exchangeCount}</StyledCount> exchanges`
-    else
-      desc = `Searching ${<StyledCount>exchangeCount</StyledCount>} exchanges within ${<StyledCount>networkCount</StyledCount>} networks`
+      desc = <div style={{display: 'flex', justifyContent: 'right'}}>Searching&nbsp;<StyledCount>{networkCount} network(s)</StyledCount>&nbsp;within&nbsp;<StyledCount>{exchangeCount} exchange(s)</StyledCount></div>
+    else      
+      desc = <div style={{display: 'flex', justifyContent: 'right'}}>Searching&nbsp;<StyledCount>{exchangeCount} exchange(s)</StyledCount>&nbsp;within&nbsp;<StyledCount>{networkCount} network(s)</StyledCount></div>
   }
-  
+
   return (
     <>
       {desc}
@@ -152,8 +153,7 @@ export const SearchFilters = () => {
   const exchangeCount = Object.values(exchangeMap).filter(b=>b).length
   
   const title = customSearchFilter?.title || 'Select Network(s)'
-  const netDesc = networkCount === 0 && exchangeCount === 0 ? 'Searching all networks and exchanges' : `Searching ${networkCount} networks within ${exchangeCount} exchanges`
-  const exchangeDesc = networkCount === 0 && exchangeCount === 0 ? 'Searching exchanges' : `Searching {exchangeCount} exchanges within {networkCount} networks`   
+  
   // RENDERING.
   return (
     <FilterWrapper styles={customSearchFilter?.styles.wrapper}>
