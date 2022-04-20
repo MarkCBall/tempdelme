@@ -50,7 +50,7 @@ const SearchResult = (props) => {
     .sort((pair1, pair2) => pair2.volumeUSD - pair1.volumeUSD);
   
   if (props.loading) {
-    const loadingTitle = customLoading?.loadingTitle ? customLoading.loadingTitle : 'Loading...'
+    const loadingTitle = customLoading?.loadingTitle ? customLoading.loadingTitle : 'Searching...'
     return <StyledLoading styles={customLoading?.styles}>{loadingTitle}</StyledLoading>;
   }
 

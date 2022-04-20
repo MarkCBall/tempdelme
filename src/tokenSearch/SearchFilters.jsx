@@ -102,7 +102,7 @@ const StyledDescription = styled.div`
     text-align: ${ props?.styles?.textAlign || "right" };
     font-size: ${ props?.styles?.fontSize || "9px" };
     font-weight: ${ props?.styles?.fontWeight || "100" };
-    padding: ${ props?.styles?.padding || "0 10px 5px" };       
+    padding: ${ props?.styles?.padding || "10px 10px 5px" };       
     background-color: ${ props?.styles?.backgroundColor || "#00070E" };
     color: ${ props?.styles?.color || "#7A808A" };       
   `}
@@ -152,8 +152,8 @@ export const SearchFilters = () => {
   const networkCount = Object.values(networkMap).filter(b=>b).length
   const exchangeCount = Object.values(exchangeMap).filter(b=>b).length
   
-  const title = customSearchFilter?.title || 'Select Network(s)'
-  
+  const networkTitle = customSearchFilter?.network?.title || 'Select Network(s)'
+  const exchangeTitle = customSearchFilter?.exchange?.title || 'Select Exchange(s)'
   // RENDERING.
   return (
     <FilterWrapper styles={customSearchFilter?.styles.wrapper}>
@@ -161,15 +161,15 @@ export const SearchFilters = () => {
         <AccordionItem>
           <AccordionItemHeading>
             <AccordionItemButton>
-              <StyledFilterHeader styles={customSearchFilter?.styles.header}>
-                <span>{title}</span>
+              <StyledFilterHeader styles={customSearchFilter?.styles?.network?.header}>
+                <span>{networkTitle}</span>
                 <FilterNetworkAll />
               </StyledFilterHeader>            
             </AccordionItemButton>
           </AccordionItemHeading>
           <AccordionItemPanel>            
-            <StyledFilterWrapper styles={customSearchFilter?.styles?.wrapper}>
-              <StyledFilterContent styles={customSearchFilter?.styles.network}>                                         
+            <StyledFilterWrapper styles={customSearchFilter?.styles?.network?.wrapper}>
+              <StyledFilterContent styles={customSearchFilter?.styles?.network?.content}>                                         
                 <FilterNetworkSelectors />              
               </StyledFilterContent>                                        
               <StyledDescription>
@@ -183,6 +183,34 @@ export const SearchFilters = () => {
           </AccordionItemPanel> 
         </AccordionItem>
       </Accordion>
+      {exchangesActive && 
+        <Accordion allowZeroExpanded>
+          <AccordionItem>
+            <AccordionItemHeading>
+              <AccordionItemButton>
+                <StyledFilterHeader styles={customSearchFilter?.styles.exchange?.header}>
+                  <span>{exchangeTitle}</span>
+                  <FilterExchangeAll />
+                </StyledFilterHeader>            
+              </AccordionItemButton>
+            </AccordionItemHeading>
+            <AccordionItemPanel>            
+              <StyledFilterWrapper styles={customSearchFilter?.styles?.exchange?.wrapper}>
+                <StyledFilterContent styles={customSearchFilter?.styles?.exchange?.content}>                                         
+                  <FilterExchangeSelectors />
+                </StyledFilterContent>                                        
+                <StyledDescription>
+                  <SearchDescription 
+                    networkCount={networkCount}
+                    exchangeCount={exchangeCount}
+                    type={'exchange'}
+                  />
+                </StyledDescription>              
+              </StyledFilterWrapper>
+            </AccordionItemPanel> 
+          </AccordionItem>
+        </Accordion>
+  }
     </FilterWrapper>
   );
 }

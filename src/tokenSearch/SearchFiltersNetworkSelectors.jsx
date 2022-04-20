@@ -19,13 +19,15 @@ export const FilterNetworkAll = () => {
     borderRadius: customAllChip?.borderRadius || "4px",
     backgroundColor: customAllChip?.backgroundColor || "#474F5C",
     border: customAllChip?.border || "0",
-    padding: customAllChip?.padding || "0.1rem 0.3rem",
+    padding: customAllChip?.padding || "4px 10px",
     margin: customAllChip?.margin || "0",
     defaultColor: customAllChip?.defaultColor || "#7A808A",   
     width: customAllChip?.width || "auto",
     height: customAllChip?.height || "auto",
     textAlign: customAllChip?.textAlign || "center" ,
-    textTransform: customAllChip?.textTransform || "inherit"
+    textTransform: customAllChip?.textTransform || "inherit",
+    gridTemplateColumn: customAllChip?.gridTemplateColumn || "40px",
+    justifySelf: customAllChip?.justifySelf || "center",
   }
 
   // RENDERING.
