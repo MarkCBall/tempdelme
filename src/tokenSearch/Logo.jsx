@@ -1,10 +1,11 @@
 import {ReactComponent as DefaultIcon } from '../icons/default.svg';
-import {ReactComponent as BscIcon } from '../icons/bsc.svg';
 
-import {ReactComponent as KyberIcon } from '../icons/kyber.svg';
-import {ReactComponent as PangolinIcon } from '../icons/pangolin.svg';
-import {ReactComponent as SushiIcon } from '../icons/sushi.svg';
-import {ReactComponent as TraderIcon } from '../icons/trader.svg';
+
+import KyberIcon from '../icons/kyber';
+import PangolinIcon from '../icons/pangolin';
+import SushiIcon from '../icons/sushi';
+import TraderIcon from '../icons/trader';
+import BscIcon from '../icons/bsc';
 import AvalancheIcon from '../icons/avalanche';
 import MoonBeamIcon from '../icons/moonbeam';
 import MoonRiverIcon from '../icons/moonriver';
