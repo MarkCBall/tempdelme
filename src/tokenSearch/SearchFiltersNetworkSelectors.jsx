@@ -27,7 +27,7 @@ export const FilterNetworkAll = () => {
     textAlign: customAllChip?.textAlign || "center" ,
     textTransform: customAllChip?.textTransform || "inherit",
     gridTemplateColumn: customAllChip?.gridTemplateColumn || "40px",
-    justifySelf: customAllChip?.justifySelf || "center",
+    justifySelf: customAllChip?.justifySelf || "center",    
   }
 
   // RENDERING.

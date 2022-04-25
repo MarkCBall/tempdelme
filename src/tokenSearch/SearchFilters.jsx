@@ -80,7 +80,7 @@ const StyledFilterHeader = styled.div`
     font-size: ${ props?.styles?.fontSize || "9px" };     
     font-weight: ${ props?.styles?.fontWeight || "500" };     
     &:hover {
-      background-color: ${ props?.styles?.hoverColor || "#ddd" };
+      background-color: ${ props?.styles?.hoverColor || "#474F5C" };
     }
   `}      
 `; 
@@ -88,10 +88,11 @@ const StyledFilterHeader = styled.div`
 const StyledFilterContent = styled.div`
   display: flex;
   flex-wrap: wrap;
-  marginBottom: 5px;
+  margin-bottom: 5px;
+  margin-left: 10px;
 
   ${({props}) => `
-    justify-content: ${ props?.styles?.justifyContent || "center" };
+    justify-content: ${ props?.styles?.justifyContent || "start" };
     align-items: ${ props?.styles?.alignItems || "center" };  
     padding:  ${ props?.styles?.padding || "0 0 5px" };           
   `}      

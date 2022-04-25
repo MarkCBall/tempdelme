@@ -54,6 +54,7 @@ export const FilterExchangeSelectors = () => {
       key={exchangeName}
       name={exchangeName}
       label={exchangeName}
+      filter={1}
       checked={exchangeMap[exchangeName] || false}
       onChange={e => dispatch(setExchangeMap({ exchangeName: exchangeName, checked: e.target.checked }))}
     />;

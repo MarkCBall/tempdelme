@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components'
 
 import { useDispatch, useSelector } from 'react-redux';
-import TokenPairDetail from './TokenPairDetail';
 import TokenSearchContext from '../Context/TokenSearch';
 import {ReactComponent as UnCheckedIcon } from '../icons/unchecked.svg';
 import { stopSelecting } from '../redux/tokenSearchSlice';
@@ -76,11 +75,26 @@ const StyledResultContent = styled.div`
     font-size: ${ styles?.fontSize || "15px" };      
     font-family: ${ styles?.fontFamily || "'Fira Code', monospace" };  
   `}  
+
+  & .header {
+    display: grid;
+    grid-template-columns: 40% 5% 6% 48%; 
+    border-bottom: 1px solid #474F5C; 
+    color: #7A808A;
+    font-size: 10px;
+    font-weight: bold;
+    padding-bottom: 10px; 
+
+    >:last-child {
+      padding-left: 5px;
+    }
+  }
 `
 const SearchResult = (props) => {
   const renderProps = useContext(TokenSearchContext);  
   const { customResult, customLoading } = renderProps;
   const dispatch = useDispatch();
+  const [currentIndex, setCurrentIndex] = useState(0)
   const {suggestions, searchText} = useSelector(
     (state) => state
   );
@@ -101,6 +115,9 @@ const SearchResult = (props) => {
   const handleClose = () => {
     dispatch(stopSelecting());
   }
+
+  
+   
   return (    
     <StyledResult styles={customResult?.styles}>    
       <StyledResultTitle styles={customResult?.title}>
@@ -110,12 +127,20 @@ const SearchResult = (props) => {
         <button onClick={handleClose}>Close <UnCheckedIcon /></button>
       </StyledResultTitle>      
       <StyledResultContent styles={customResult?.content}>
+        <div className='header'>
+          <span>Pair</span>
+          <span>Net.</span>
+          <span>Exch.</span>
+          <span>Details.</span>
+        </div>
         {
           filteredSuggestions.map((suggestions, index) => 
           <ResultDetail
             suggestions={filteredSuggestions}
             index={index}
             key={`token-detail-${index}`}
+            currentIndex={currentIndex}
+            handleDetail={setCurrentIndex}
           />
           )
         }  

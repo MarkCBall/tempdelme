@@ -9,6 +9,8 @@ import TokenSearchContext from '../Context/TokenSearch'
 
 const StyledWrapper = styled.div`
   ${({props}) => `
+    min-width: 540px;
+    overflow-x: auto;
     background-color: ${ props?.styles?.backgroundColor || "#474F5C" };  
     border-color: ${ props?.styles?.borderColor || "#474F5C" };  
     border-style: ${ props?.styles?.borderStyle || "solid" };  
