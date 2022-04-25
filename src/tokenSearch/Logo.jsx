@@ -27,7 +27,7 @@ import ZeroExchangeIcon from '../icons/zero.exchange';
 import BeamSwapIcon from '../icons/beamswap';
 import SolarBeamIcon from '../icons/solarbeam';
 import StellaSwapIcon from '../icons/stellaswap';
-
+import SolarFlareIcon from '../icons/solar.flare'
 export const Logo = ({label, filter}) => {  
   let result;
   switch(label) {
@@ -112,7 +112,7 @@ export const Logo = ({label, filter}) => {
       result = <BeamSwapIcon />;
       break;
     case 'solarflare':
-      result = <SolarBeamIcon />;
+      result = <SolarFlareIcon />;
       break;
     case 'stellaswap':
       result = <StellaSwapIcon />;
