@@ -1,7 +1,6 @@
 
 import { uniq } from "lodash";
 
-
 export const romeTokenSyncUri = String(
   process.env.REACT_APP_HASURA_API_ENDPOINT_WS ||//todo should be a prop or something
     'https://romenet.prod.velox.global/v1/graphql'
@@ -45,4 +44,3 @@ const moonriverPairs = [
 export const networkExchangePairs = [...BSCPairs,...AvalanchePairs, ...moonbeamPairs, ...moonriverPairs];
 export const networkNames = uniq(networkExchangePairs.map(pair => pair[0]));
 export const exchangeNames = networkNames => uniq(networkExchangePairs.filter(pair => networkNames.includes(pair[0])).map(pair => pair[1]));
-

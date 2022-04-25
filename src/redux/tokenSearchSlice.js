@@ -104,11 +104,9 @@ export const searchTokenPairs = createAsyncThunk(
         .filter(network => networkExchangePairs
           .filter(pair => pair[0] === network && processedExchanges.includes(pair[1])).length >= 1);
 
-      // Loading the data.
+      // Loading the data.      
       const data = await retry(() => searchTokensAsync(searchString, processedNetworks, processedExchanges), { retries: 1 });
 
-      // console.log("data", data);
-      console.log("data", data.length);
       return { data, pairSearchTimestamp };
     }
     catch (e) {

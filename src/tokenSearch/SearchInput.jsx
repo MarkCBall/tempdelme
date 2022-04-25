@@ -1,121 +1,97 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { searchTokenPairs, startSelecting, toggleSelecting, setSearchText } from '../redux/tokenSearchSlice';
-import magnifyingGlass from './icon-search.svg';
+import { searchTokenPairs, startSelecting, setSearchText } from '../redux/tokenSearchSlice';
+import SearchIcon from './SearchIcon';
+import debounce from 'lodash.debounce';
+import TokenSearchContext from '../Context/TokenSearch';
 
-
-const PairField = styled.div`
-  display: block;
+const StyledInput = styled.input`
+  background-color: inherit;
   margin-left: auto;
   margin-right: auto;
   position: relative;
-  border-color: #067c82;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 30px;
-  background: #08333c;
-  padding: 11px 15px;
-  font-size: 15px;
-  color: #ffffff;
-  font-family: 'Fira Code', monospace;
 
-  @media only screen and (max-width: 990px) {
-    width: 100%;
-  }
-
-  @media only screen and (max-width: 769px) {
-    width: 100%;
-  }
+  ${({props}) => `
+    width: ${ props?.styles?.width || "-webkit-fill-available" };
+    height: ${ props?.styles?.height || "auto" };
+    border: ${ props?.styles?.border || "none" };   
+    color: ${ props?.styles?.color || "#7A808A" };
+    display: ${ props?.styles?.display || "block" };   
+    border-color: ${ props?.styles?.borderColor || "#474F5C" };  
+    border-style: ${ props?.styles?.borderStyle || "none" };  
+    border-width: ${ props?.styles?.borderWidth || "0" };  
+    border-radius: ${ props?.styles?.borderRadius || "4px" };  
+    background: ${ props?.styles?.background || "#00070E" };   
+    padding: ${ props?.styles?.padding || "10px 14px" };    
+    font-size: ${ props?.styles?.fontSize || "8px" };      
+    font-family: ${ props?.styles?.fontFamily || "'Fira Code', monospace" };
+  `}  
 `;
 
-const StyledInput = styled.input`
-  width: 100%;
-  border: none;
-  background-color: inherit;
-  color: #ffffff;
-  //width: auto;
-`;
-
-const HideOnSmallScreen = styled.img`
-  width: 30px;
+const StyledSearchIconWrapper = styled.div`  
   cursor: pointer;
   float: right;
   position: absolute;
-  right: 22px;
-  top: 9px;
-  @media only screen and (max-width: 990px) {
-    display: none;
-  }
+  ${({props}) => `
+    right: ${ props?.styles?.right || "14px" };      
+    top: ${ props?.styles?.top || "6px" };        
+  `}    
 `;
 
+const StyledWrapper = styled.div`
+  position: relative;
+`;
 
 const SearchInput = () => {
   const dispatch = useDispatch();
-  const { searchText, networkMap, exchangeMap } = useSelector((state) => state);
-  const isSelecting = useSelector((state) => state?.isSelecting);
-  const isLoading = useSelector((state) => state.isLoading);
-  const fetchError = useSelector((state) => state?.fetchError);
-  const selectedPair = useSelector((state) => state?.selectedPair);
-
-
-  // Updates the datasets of the results.
+  const renderProps = useContext(TokenSearchContext);  
+  const { customSearchInput } = renderProps;
+ 
+  const { searchText, networkMap, exchangeMap } = useSelector((state) => state); 
+  
+  // Updates the datasets of the results. 
   useEffect(() => {
     // Ensure that the search text fulfills the minimum lenght requirement.
     if (searchText.length >= process.env.REACT_APP_SEARCH_INPUT_LENGTH_MINIMUM) {
       dispatch(searchTokenPairs(searchText));
     }
-  }, [dispatch, searchText, networkMap, exchangeMap]);
-
+  }, [dispatch, networkMap, exchangeMap, searchText]); 
   
+
+  const onChangeFilter = (event) => {    
+    const value = event.target.value    
+    dispatch(setSearchText(value))
+  }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debounceChangeHandler = useCallback( debounce(onChangeFilter, 350), [searchText])
+  
+  const placeholder = customSearchInput?.placeholder ?  customSearchInput?.placeholder : 'Search pair by symbol, name, contract or token'
+
+  const activeColor = customSearchInput?.styles?.search?.activeColor ? customSearchInput?.styles?.search?.activeColor : '#FF0000'
+  const color  = customSearchInput?.styles?.search?.color ? customSearchInput?.styles?.search?.color : '#7A808A'
+  const height = customSearchInput?.styles?.search?.height ? customSearchInput?.styles?.search?.height : 14
+  const width = customSearchInput?.styles?.search?.width ? customSearchInput?.styles?.search?.width : 14
+ 
   // RENDERING.
   return (
-    <PairField onClick={() => dispatch(startSelecting())}>
-      <StyledInput
-        placeholder={'Select a token pair'}
+    <StyledWrapper onClick={() => dispatch(startSelecting())}>
+      <StyledInput 
+        placeholder={placeholder}
         autocomplete={'off'}
-        onChange={e => dispatch(setSearchText(e.target.value))}
+        onChange={debounceChangeHandler}
+        styles={customSearchInput?.styles?.input}
       />
-      <HideOnSmallScreen
-        alt={''}
-        src={magnifyingGlass}
-        onClick={() => dispatch(toggleSelecting())}
-      />
-    </PairField>
+      <StyledSearchIconWrapper styles={customSearchInput?.styles?.search}>       
+        <SearchIcon
+            activeColor={activeColor}
+            color={color}
+            height={height}
+            width={width}
+          />          
+        </StyledSearchIconWrapper>
+    </StyledWrapper>
   );
 };
 export default SearchInput;
-
-
-  // const selectedPairText = selectedPair && combinePairText(selectedPair);
-
-  // const onClick = () => dispatch(startSelecting());
-  // const onKeyDown = (e) => e.code === 'Escape' && dispatch(stopSelecting());
-
-  // //todo throw to a global error boundary
-  // if (fetchError) {
-  //   return (
-  //     <PairField>
-  //       <StyledInput
-  //         autocomplete={'off'}
-  //         style={{ color: 'red' }}
-  //         value={'Something went wrong..'}
-  //         onChange={() => {}}
-  //       />
-  //     </PairField>
-  //   );
-  // }
-
-  // let value;
-  // if (isSelecting) {
-  //   value = searchText;
-  // } else {
-  //   value = selectedPairText || 'Select a token pair..';
-  // }
-// const combinePairText = (pair) => {
-//   if (pair.token0?.symbol && pair.token1?.symbol && pair.id) {
-//     const miniAddress = pair.id.slice(0, 8) + '...' + pair.id.slice(-8);
-//     return pair.token0?.symbol + '/' + pair.token1?.symbol + '/' + miniAddress;
-//   }
-//   return '';
-// };
